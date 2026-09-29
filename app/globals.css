@@ -1,0 +1,348 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Timbuktu design tokens.
+   Components use semantic colours (canvas, ink, accent...). Each theme
+   below sets their values, so switching theme needs no component code.
+   ------------------------------------------------------------------ */
+@theme inline {
+  --color-canvas: var(--tb-canvas);
+  --color-surface: var(--tb-surface);
+  --color-raised: var(--tb-raised);
+  --color-ink: var(--tb-ink);
+  --color-muted: var(--tb-muted);
+  --color-accent: var(--tb-accent);
+  --color-accent-strong: var(--tb-accent-strong);
+  --color-on-accent: var(--tb-on-accent);
+  --color-live: var(--tb-live);
+  --color-line: var(--tb-line);
+  --color-line-strong: var(--tb-line-strong);
+  /* Overlays for hover and subtle fills. Follows the text colour, so it works on light and dark. */
+  --color-tint: var(--tb-ink);
+  --color-scrim: var(--tb-scrim);
+  --color-shadow: var(--tb-shadow);
+  --color-chart-1: var(--tb-chart-1);
+  --color-chart-2: var(--tb-chart-2);
+  --color-chart-3: var(--tb-chart-3);
+  --color-chart-4: var(--tb-chart-4);
+  --color-chart-5: var(--tb-chart-5);
+}
+
+@theme {
+  --font-display: var(--font-anton), "Impact", "Arial Narrow", sans-serif;
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display-xl: clamp(3.5rem, 11vw, 9rem);
+  --text-display-xl--line-height: 0.88;
+  --text-display-lg: clamp(2.5rem, 6vw, 4.5rem);
+  --text-display-lg--line-height: 0.95;
+  --text-display-md: clamp(1.75rem, 3.5vw, 2.5rem);
+  --text-display-md--line-height: 1;
+
+  --radius-field: 0.75rem;
+  --radius-card: 1.25rem;
+  --radius-sheet: 1.75rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  --animate-breathe: breathe 2.6s ease-in-out infinite;
+  --animate-sheet-up: sheet-up 420ms var(--ease-out-expo);
+  --animate-sheet-down: sheet-down 220ms var(--ease-accelerate);
+  --animate-drawer-in: drawer-in 380ms var(--ease-out-expo);
+  --animate-drawer-out: drawer-out 200ms var(--ease-accelerate);
+  --animate-fade-in: fade-in 280ms var(--ease-decelerate);
+  --animate-fade-out: fade-out 180ms var(--ease-accelerate);
+  --animate-pop-in: pop-in 280ms var(--ease-out-expo);
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+  }
+  @keyframes sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  @keyframes sheet-down {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(100%);
+    }
+  }
+  @keyframes drawer-in {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @keyframes drawer-out {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+}
+
+/* Morning sunrise: clear sky, first light. The default. */
+:root,
+[data-theme="sunrise"] {
+  color-scheme: light;
+  --tb-canvas: #f7f9fc;
+  --tb-surface: #ffffff;
+  --tb-raised: #ebf1f8;
+  --tb-ink: #1c2638;
+  --tb-muted: #56657a;
+  --tb-accent: #c2410c;
+  --tb-accent-strong: #9a3412;
+  --tb-on-accent: #ffffff;
+  --tb-live: #be1e57;
+  --tb-line: rgb(28 38 56 / 0.1);
+  --tb-line-strong: rgb(28 38 56 / 0.22);
+  --tb-scrim: rgb(28 38 56 / 0.45);
+  --tb-shadow: rgb(28 38 56 / 0.12);
+  --tb-chart-1: #c2410c;
+  --tb-chart-2: #7d8da3;
+  --tb-chart-3: #1c2638;
+  --tb-chart-4: #e0a13a;
+  --tb-chart-5: #be1e57;
+  /* Home hero (see docs/editing-the-hero.md) */
+  --tb-art: url("/hero/sunrise.webp");
+  --tb-art-pos-sm: 62% 50%;
+  --tb-art-pos: 50% 22%;
+  --tb-art-ink: #1c2638;
+  --tb-art-shadow: none;
+  --tb-art-scrim: linear-gradient(to top, rgb(247 249 252 / 0.95) 0%, rgb(247 249 252 / 0.8) 30%, rgb(247 249 252 / 0) 60%);
+  --tb-art-scrim-lg: radial-gradient(
+    ellipse 80% 90% at 0% 100%,
+    rgb(247 249 252 / 0.94) 0%,
+    rgb(247 249 252 / 0.78) 45%,
+    rgb(247 249 252 / 0) 82%
+  );
+}
+
+/* Sunset: golden hour, warm light, rose and amber. */
+[data-theme="sunset"] {
+  color-scheme: light;
+  --tb-canvas: #fff3e8;
+  --tb-surface: #fffbf7;
+  --tb-raised: #fbe3d2;
+  --tb-ink: #3a1a2b;
+  --tb-muted: #77505f;
+  --tb-accent: #a3195b;
+  --tb-accent-strong: #7f1245;
+  --tb-on-accent: #ffffff;
+  --tb-live: #b93a0a;
+  --tb-line: rgb(58 26 43 / 0.11);
+  --tb-line-strong: rgb(58 26 43 / 0.24);
+  --tb-scrim: rgb(58 26 43 / 0.5);
+  --tb-shadow: rgb(120 50 40 / 0.14);
+  --tb-chart-1: #a3195b;
+  --tb-chart-2: #c49a8a;
+  --tb-chart-3: #3a1a2b;
+  --tb-chart-4: #f08a3c;
+  --tb-chart-5: #b93a0a;
+  /* Home hero (see docs/editing-the-hero.md) */
+  --tb-art: url("/hero/sunset.webp");
+  --tb-art-pos-sm: 50% 30%;
+  --tb-art-pos: 50% 48%;
+  --tb-art-ink: #fff3e8;
+  --tb-art-shadow: 0 2px 22px rgb(20 6 12 / 0.55);
+  --tb-art-scrim: linear-gradient(
+    to top,
+    rgb(38 14 24 / 0.94) 0%,
+    rgb(38 14 24 / 0.8) 38%,
+    rgb(38 14 24 / 0.45) 60%,
+    rgb(38 14 24 / 0) 80%
+  );
+  --tb-art-scrim-lg: radial-gradient(
+    ellipse 110% 130% at 0% 100%,
+    rgb(38 14 24 / 0.94) 0%,
+    rgb(38 14 24 / 0.84) 42%,
+    rgb(38 14 24 / 0.4) 66%,
+    rgb(38 14 24 / 0) 88%
+  );
+}
+
+/* Moonlight: deep blue night, silver light. */
+[data-theme="moonlight"] {
+  color-scheme: dark;
+  --tb-canvas: #0b1322;
+  --tb-surface: #131f35;
+  --tb-raised: #1b2a45;
+  --tb-ink: #e7edf6;
+  --tb-muted: #9aabc4;
+  --tb-accent: #a8c6ff;
+  --tb-accent-strong: #c8dbff;
+  --tb-on-accent: #0b1322;
+  --tb-live: #ff7d96;
+  --tb-line: rgb(154 171 196 / 0.16);
+  --tb-line-strong: rgb(154 171 196 / 0.32);
+  --tb-scrim: rgb(3 7 15 / 0.7);
+  --tb-shadow: rgb(0 0 0 / 0.45);
+  --tb-chart-1: #a8c6ff;
+  --tb-chart-2: #5d7092;
+  --tb-chart-3: #e7edf6;
+  --tb-chart-4: #7fd1c7;
+  --tb-chart-5: #ff7d96;
+  /* Home hero (see docs/editing-the-hero.md) */
+  --tb-art: url("/hero/moonlight.webp");
+  --tb-art-pos-sm: 50% 0%;
+  --tb-art-pos: 50% 6%;
+  --tb-art-ink: #e7edf6;
+  --tb-art-shadow: 0 2px 22px rgb(0 0 0 / 0.45);
+  --tb-art-scrim: linear-gradient(to top, rgb(11 19 34 / 1) 0%, rgb(11 19 34 / 0.65) 32%, rgb(11 19 34 / 0) 60%);
+  --tb-art-scrim-lg: radial-gradient(ellipse 80% 90% at 0% 100%, rgb(11 19 34 / 0.94) 0%, rgb(11 19 34 / 0.66) 45%, rgb(11 19 34 / 0) 82%);
+}
+
+/* Home hero: one photo per theme. Only the active theme's photo is requested. */
+.hero-art {
+  background-color: var(--color-raised);
+  background-image: var(--tb-art);
+  background-size: cover;
+  background-position: var(--tb-art-pos-sm);
+}
+.hero-scrim {
+  background: var(--tb-art-scrim);
+}
+.hero-copy {
+  color: var(--tb-art-ink);
+  text-shadow: var(--tb-art-shadow);
+}
+.hero-variant {
+  display: none;
+}
+[data-theme="sunrise"] .hero-variant[data-for="sunrise"],
+[data-theme="sunset"] .hero-variant[data-for="sunset"],
+[data-theme="moonlight"] .hero-variant[data-for="moonlight"] {
+  display: block;
+}
+@media (min-width: 768px) {
+  .hero-art {
+    background-position: var(--tb-art-pos);
+  }
+  .hero-scrim {
+    background: var(--tb-art-scrim-lg);
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-canvas);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    transition:
+      background-color 300ms ease,
+      color 300ms ease;
+    font-feature-settings: "ss01";
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  [data-theme="moonlight"] input::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.005em;
+    font-weight: 400;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .measure {
+    max-width: 65ch;
+  }
+  .pb-safe-nav {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
