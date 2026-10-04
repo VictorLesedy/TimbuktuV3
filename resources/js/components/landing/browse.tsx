@@ -114,7 +114,7 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
                         <h2 className="font-display text-[clamp(2.4rem,4.6vw,4.25rem)] leading-[1]">What’s on.</h2>
                         <p className="mt-3 max-w-[52ch] text-gray-600">Events, venues, tours and talent to hire across Tanzania. Sample listings while launch partners are signed.</p>
                     </div>
-                    <Button asChild variant="link" className="self-start px-0 text-base font-semibold text-navy-900 md:self-auto">
+                    <Button asChild size="lg" className="self-start md:self-auto">
                         <Link href={exploreHref(f)}>
                             Open in Explore
                             <ArrowRightIcon aria-hidden="true" />
