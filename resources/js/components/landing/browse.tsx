@@ -74,7 +74,7 @@ export function Poster({ listing }: { listing: Listing }) {
  * Browse on the home page: everything that is on, filterable right here by kind, city,
  * day, price and the day a place is busiest, before anyone needs the Explore page.
  */
-export function Browse({ listings, signals }: { listings: Listing[]; signals: Map<string, Signals> }) {
+export function Browse({ listings, signals, underCurtain = false }: { listings: Listing[]; signals: Map<string, Signals>; underCurtain?: boolean }) {
     const [f, setF] = useState<BrowseFilters>(EMPTY_FILTERS);
     const [shown, setShown] = useState(PAGE);
     const set = (patch: Partial<BrowseFilters>) => {
@@ -86,7 +86,15 @@ export function Browse({ listings, signals }: { listings: Listing[]; signals: Ma
     const priceLabel = f.min > 0 || f.max < PRICE_STEPS.at(-1)! ? `${tsh(f.min)} to ${tsh(f.max)}` : 'Any price';
 
     return (
-        <section id="browse" data-tone="light" className="scroll-mt-16 bg-gray-50 py-20 text-navy-900 md:py-28">
+        <section
+            id="browse"
+            data-tone="light"
+            className={cn(
+                'scroll-mt-16 bg-gray-50 py-20 text-navy-900 md:py-28',
+                // Slides in under the hero's pinned frame, so the curtains open straight onto it.
+                underCurtain && 'relative z-0 -mt-[100dvh] before:absolute before:inset-x-0 before:bottom-full before:h-[100dvh] before:bg-gray-50',
+            )}
+        >
             <Container>
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>

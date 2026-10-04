@@ -60,24 +60,18 @@ export default function Home() {
         }
 
         const nav = scope.querySelector<HTMLElement>('[data-nav]');
+        const sections = Array.from(scope.querySelectorAll<HTMLElement>(':scope > main > [data-tone]'));
         const ctx = gsap.context(() => {
-            // The header takes the tone of whichever section sits under it.
-            scope.querySelectorAll<HTMLElement>(':scope > main > [data-tone]').forEach((section, i) => {
-                ScrollTrigger.create({
-                    trigger: section,
-                    start: 'top 32px',
-                    end: 'bottom 32px',
-                    onToggle: (self) => {
-                        if (self.isActive && nav) {
-                            nav.dataset.tone = section.dataset.tone;
-                            nav.dataset.solid = i === 0 && self.progress < 0.01 ? 'false' : 'true';
-                        }
-                    },
-                    onUpdate: (self) => {
-                        if (i === 0 && nav && self.isActive) nav.dataset.solid = self.progress > 0.01 ? 'true' : 'false';
-                    },
-                });
-            });
+            // The header takes the tone of the last section whose top has passed under it.
+            // (The hero and the listings overlap while the curtains open, so this checks positions.)
+            const update = () => {
+                if (!nav || !sections.length) return;
+                let current = sections[0]!;
+                for (const section of sections) if (section.getBoundingClientRect().top <= 32) current = section;
+                nav.dataset.tone = current.dataset.tone;
+                nav.dataset.solid = current === sections[0] && window.scrollY < 8 ? 'false' : 'true';
+            };
+            ScrollTrigger.create({ start: 0, end: 'max', onUpdate: update, onRefresh: update });
         }, scope);
 
         let cancelled = false;
@@ -131,7 +125,7 @@ export default function Home() {
                 <Nav />
                 <main>
                     <Hero reduced={reduced} next={data.next} />
-                    <Browse listings={data.live} signals={signals} />
+                    <Browse listings={data.live} signals={signals} underCurtain={!reduced} />
                     <Turn event={data.event} venue={data.venue} venueSignals={data.venue ? signals.get(data.venue.id) : undefined} />
                     <BusyWeek listings={data.live} signals={signals} />
                     <FourWays event={data.event} venue={data.venue} service={data.service} pro={data.pro} signals={signals} />
