@@ -222,7 +222,7 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                             {next?.event && (
                                 // The next real show as a dark ticket stub: photo inset 8px, when, what, where, and the price beside the action.
                                 <Link data-hero-rest href={listingUrl(next)} className="group block w-full shrink-0 rounded-[1.25rem] md:w-[25rem]">
-                                    <Card className="flex-row items-stretch gap-0 rounded-[1.25rem] bg-navy-900 px-(--card-spacing) text-white shadow-[0_24px_48px_-24px_rgb(0_0_0/0.7)] ring-white/10 transition-colors duration-200 [--card-spacing:--spacing(2)] group-hover:bg-navy-800">
+                                    <Card className="flex-row items-stretch gap-0 rounded-[1.25rem] bg-navy-700 px-(--card-spacing) text-white shadow-[0_24px_48px_-24px_rgb(0_0_0/0.7)] ring-white/15 transition-colors duration-200 [--card-spacing:--spacing(2)] group-hover:bg-navy-600">
                                         <Photo photo={next.photos[0]!} width={240} ratio={1} className="aspect-auto! w-24 shrink-0 rounded-[0.75rem] sm:w-28" sizes="112px" eager />
                                         <span className="flex min-w-0 flex-1 flex-col justify-between gap-3 py-1.5 pr-1.5 pl-4">
                                             <span className="block">
