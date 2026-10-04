@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react';
 /** Colour palettes to try. The values live in app.css under [data-palette]. */
 export const PALETTES = [
     { id: 'ember', name: 'Ember', swatch: ['#141414', '#ff7a1a'] },
-    { id: 'crimson', name: 'Crimson', swatch: ['#161112', '#ff3340'] },
+    { id: 'red', name: 'Deep red', swatch: ['#150b0c', '#9b111e'] },
     { id: 'navy', name: 'Navy', swatch: ['#0d1c42', '#a9bcf5'] },
     { id: 'cobalt', name: 'Cobalt', swatch: ['#1230c9', '#ffe14d'] },
     { id: 'forest', name: 'Forest', swatch: ['#0b3324', '#d3ee6b'] },

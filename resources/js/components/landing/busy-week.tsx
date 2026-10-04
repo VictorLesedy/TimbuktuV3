@@ -54,7 +54,7 @@ export function BusyWeek({ listings, signals }: { listings: Listing[]; signals: 
                             key={d}
                             value={String(d)}
                             aria-label={DAY_NAMES[d]}
-                            className="size-[4.5rem] flex-col gap-0 rounded-full text-white ring-1 ring-white/25 hover:bg-white/10 hover:text-white data-[state=on]:bg-peri-300 data-[state=on]:text-navy-950 data-[state=on]:ring-peri-300 sm:size-24"
+                            className="size-[4.5rem] flex-col gap-0 rounded-full text-white ring-1 ring-white/25 hover:bg-white/10 hover:text-white data-[state=on]:bg-peri-300 data-[state=on]:text-on-peri data-[state=on]:ring-peri-300 sm:size-24"
                         >
                             <span className="font-display text-xl sm:text-2xl">{DAY_SHORT[d]}</span>
                             <span className="text-[0.7rem] opacity-70">{d === today ? 'today' : ' '}</span>

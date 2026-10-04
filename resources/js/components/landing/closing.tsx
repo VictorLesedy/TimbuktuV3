@@ -74,7 +74,7 @@ export function Entertainers({ settings }: { settings: Settings }) {
                             Same code again: refused
                         </p>
                     </Card>
-                    <Card className="rounded-2xl bg-peri-300 px-6 text-navy-950 ring-0">
+                    <Card className="rounded-2xl bg-peri-300 px-6 text-on-peri ring-0">
                         <p className="text-sm">Last withdrawal</p>
                         <p className="font-display text-4xl tabular">{tsh(data.payout?.amount ?? 0)}</p>
                         <p className="text-sm">{data.payout ? `To ${data.payout.network}` : 'No withdrawals yet'}</p>
