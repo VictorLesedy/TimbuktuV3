@@ -15,17 +15,31 @@ export function nextEvent(live: Listing[], now = Date.now()): Listing | undefine
 export const ended = (l: Listing, now = Date.now()) => Boolean(l.event && new Date(l.event.endsAt).getTime() < now);
 
 /**
- * For an event's page: what else is coming up and what has already happened, its own
- * series and the same host first, then other events in the same city.
+ * For an event's page. Upcoming: what else is on from the same host, then in the same
+ * city. Related: upcoming events of the same type anywhere, then any others, leaving out
+ * what Upcoming already shows. Past: the series' earlier editions and the host's, then
+ * the city's.
  */
 export function relatedEvents(all: Listing[], l: Listing, count = 4, now = Date.now()) {
     const events = all.filter((x) => x.event && x.status === 'live' && x.id !== l.id);
-    const rank = (x: Listing) => (x.hostId === l.hostId ? 0 : x.city === l.city ? 1 : 2);
-    const by = (dir: 1 | -1) => (a: Listing, b: Listing) => rank(a) - rank(b) || dir * a.event!.startsAt.localeCompare(b.event!.startsAt);
-    return {
-        upcoming: events.filter((x) => !ended(x, now) && rank(x) < 2).sort(by(1)).slice(0, count),
-        past: events.filter((x) => ended(x, now) && rank(x) < 2).sort(by(-1)).slice(0, count),
-    };
+    const near = (x: Listing) => (x.hostId === l.hostId ? 0 : x.city === l.city ? 1 : 2);
+    const alike = (x: Listing) => (x.category === l.category ? 0 : 1);
+    const soonest = (a: Listing, b: Listing) => a.event!.startsAt.localeCompare(b.event!.startsAt);
+    const coming = events.filter((x) => !ended(x, now));
+    const upcoming = coming
+        .filter((x) => near(x) < 2)
+        .sort((a, b) => near(a) - near(b) || soonest(a, b))
+        .slice(0, count);
+    const shown = new Set(upcoming.map((x) => x.id));
+    const related = coming
+        .filter((x) => !shown.has(x.id))
+        .sort((a, b) => alike(a) - alike(b) || soonest(a, b))
+        .slice(0, count);
+    const past = events
+        .filter((x) => ended(x, now) && near(x) < 2)
+        .sort((a, b) => near(a) - near(b) || soonest(b, a))
+        .slice(0, count);
+    return { upcoming, related, past };
 }
 
 /** The listing of a kind with the most check-ins, the best proof that people actually go. */

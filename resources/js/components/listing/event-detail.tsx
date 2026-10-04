@@ -10,7 +10,8 @@ import { ended } from '@/lib/showcase';
 import type { Signals } from '@/lib/signals';
 import { cn } from '@/lib/utils';
 import type { Host, Listing, Review } from '@/types';
-import { ArrowRightIcon, CalendarDaysIcon, CheckBadgeIcon, ClockIcon, MapPinIcon, TicketIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, ArrowsPointingOutIcon, CalendarDaysIcon, ClockIcon, MapPinIcon, TicketIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon as VerifiedIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useEffect, useRef, useState } from 'react';
@@ -20,11 +21,13 @@ import { Reviews, SaveShare } from './listing-detail';
 import { Photo } from './photo';
 import { SignalBadge } from './signal-badge';
 import { SignalsPanel } from './signals-panel';
+import { Spotlight } from './spotlight';
 
 /**
  * The event's photos as a carousel that moves on by itself every five seconds. It pauses
  * while the pointer is over it, carries on after a swipe, and stays still for anyone who
- * asks for reduced motion. The thumbnails follow it and jump to a photo.
+ * asks for reduced motion. The thumbnails follow it and jump to a photo, and a photo
+ * opens full screen in the spotlight.
  */
 function PhotoCarousel({ listing }: { listing: Listing }) {
     const photos = listing.photos;
@@ -42,17 +45,36 @@ function PhotoCarousel({ listing }: { listing: Listing }) {
         };
     }, [api]);
     const many = photos.length > 1;
+    const [spot, setSpot] = useState<number | null>(null);
+    // The carousel holds still behind the spotlight, and carries on when it closes. The plugin
+    // only exists once the carousel is running, so wait for its api.
+    const paused = useRef(false);
+    useEffect(() => {
+        if (!api || !many || reduced) return;
+        if (spot !== null) {
+            paused.current = true;
+            autoplay.current.stop();
+        } else if (paused.current) {
+            paused.current = false;
+            autoplay.current.play();
+        }
+    }, [api, spot, many, reduced]);
 
     return (
         <div className="space-y-3">
-            <Carousel setApi={setApi} opts={{ loop: true }} plugins={many && !reduced ? [autoplay.current] : []} className="overflow-hidden rounded-2xl" aria-label="Photos">
+            <Carousel setApi={setApi} opts={{ loop: true }} plugins={many && !reduced ? [autoplay.current] : []} className="relative overflow-hidden rounded-2xl" aria-label="Photos">
                 <CarouselContent className="ml-0">
                     {photos.map((p, i) => (
                         <CarouselItem key={p.src} className="pl-0">
-                            <Photo photo={p} width={1400} ratio={16 / 9} eager={i === 0} sizes="(min-width: 1024px) 60vw, 100vw" />
+                            <button type="button" onClick={() => setSpot(i)} aria-label={`View photo ${i + 1} full screen`} className="block w-full cursor-zoom-in">
+                                <Photo photo={p} width={1400} ratio={16 / 9} eager={i === 0} sizes="(min-width: 1024px) 60vw, 100vw" />
+                            </button>
                         </CarouselItem>
                     ))}
                 </CarouselContent>
+                <Button variant="secondary" size="icon" className="absolute top-3 right-3" aria-label="View photos full screen" onClick={() => setSpot(index)}>
+                    <ArrowsPointingOutIcon />
+                </Button>
                 {many && (
                     <>
                         <CarouselPrevious variant="secondary" className="left-3" />
@@ -80,6 +102,7 @@ function PhotoCarousel({ listing }: { listing: Listing }) {
                 </div>
             )}
             <p className="text-xs text-muted-foreground">Photo: {photos[index]?.credit}, Unsplash</p>
+            <Spotlight photos={photos} start={spot ?? 0} open={spot !== null} onOpenChange={(open) => !open && setSpot(null)} />
         </div>
     );
 }
@@ -131,7 +154,7 @@ export function EventDetail({
     host: Host;
     signals: Signals;
     reviews: Review[];
-    related: { upcoming: Listing[]; past: Listing[] };
+    related: { upcoming: Listing[]; related: Listing[]; past: Listing[] };
 }) {
     const ev = listing.event!;
     const over = ended(listing);
@@ -187,7 +210,7 @@ export function EventDetail({
                         <div className="space-y-1">
                             <h2 className="flex items-center gap-1.5 font-semibold">
                                 Hosted by {host.name}
-                                {host.verified && <CheckBadgeIcon className="size-5 fill-green-600 text-white" aria-label="Verified by Timbuktu" />}
+                                {host.verified && <VerifiedIcon className="size-5 text-green-600" aria-label="Verified by Timbuktu" />}
                             </h2>
                             <p className="text-sm text-muted-foreground">{host.bio}</p>
                             <p className="text-sm text-muted-foreground">On Timbuktu since {formatDate(host.joinedAt)}</p>
@@ -206,6 +229,8 @@ export function EventDetail({
                 </div>
             </div>
             <EventRow title="Upcoming events" events={related.upcoming} />
+            {/* These related events are a duplicate of the above, so i will comment them for now. */}
+            {/* <EventRow title="Related events" events={related.related} /> */}
             <EventRow title="Past events" events={related.past} />
         </div>
     );

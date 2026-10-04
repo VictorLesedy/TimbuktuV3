@@ -21,7 +21,7 @@ export default function ListingPage({ slug }: { slug: string }) {
     const session = useApp((s) => s.session);
     const signals = useSignals();
     const reviews = useMemo(() => allReviews.filter((r) => r.listingId === listing?.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [allReviews, listing?.id]);
-    const related = useMemo(() => (listing ? relatedEvents(listings, listing) : { upcoming: [], past: [] }), [listings, listing]);
+    const related = useMemo(() => (listing ? relatedEvents(listings, listing) : { upcoming: [], related: [], past: [] }), [listings, listing]);
 
     if (!hydrated) {
         return (
