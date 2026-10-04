@@ -87,12 +87,12 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
 
     return (
         <section
-            id="browse"
+            id={underCurtain ? undefined : 'browse'}
             data-tone="light"
             className={cn(
                 'scroll-mt-16 bg-gray-50 py-20 text-navy-900 md:py-28',
-                // Slides in under the hero's pinned frame, so the curtains open straight onto it.
-                underCurtain && 'relative z-0 -mt-[100dvh] before:absolute before:inset-x-0 before:bottom-full before:h-[100dvh] before:bg-gray-50',
+                // Holds at the top while the curtain opens on it (its wrapper sets how long).
+                underCurtain && 'sticky top-0',
             )}
         >
             <Container>

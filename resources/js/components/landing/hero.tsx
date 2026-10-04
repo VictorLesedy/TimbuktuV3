@@ -11,10 +11,10 @@ import { KINDS, type Kind, type Listing } from '@/types';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import { Component, lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { CLOSE_FROM } from './curtain';
 import { fontsReady, gsap, SplitText } from './motion';
 
 const MicStage = lazy(() => import('./mic-scene'));
-const CurtainStage = lazy(() => import('./curtain-scene'));
 const HERO_KINDS: Record<Kind, string> = { event: 'Concerts and events', venue: 'Rooftops and venues', service: 'Tours and classes', professional: 'DJs and bands to hire' };
 // Sauti za Busara, Stone Town, Zanzibar (photo: Nichika Sakurai, Unsplash).
 const HERO_PHOTO = 'photo-1676156786479-46a5b1715f41';
@@ -86,40 +86,18 @@ export function StageObject({ progress, live, night, reduced }: { progress: Reac
     );
 }
 
-/** Two pleated halves in CSS, for devices without WebGL; --open is set by the scroll. */
-function CssCurtains() {
-    const cloth =
-        'repeating-linear-gradient(90deg, color-mix(in oklab, var(--a-400) 55%, black) 0 1.2rem, color-mix(in oklab, var(--a-400) 80%, black) 2.4rem, color-mix(in oklab, var(--a-400) 55%, black) 3.6rem)';
-    return (
-        <>
-            <div className="absolute inset-y-0 left-0 w-[52%] will-change-transform" style={{ background: cloth, transform: 'translateX(calc(-100% * var(--open, 1)))' }} />
-            <div className="absolute inset-y-0 right-0 w-[52%] will-change-transform" style={{ background: cloth, transform: 'translateX(calc(100% * var(--open, 1)))' }} />
-        </>
-    );
-}
-
-const smooth = (t: number) => t * t * (3 - 2 * t);
-const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
-
 /**
  * The thesis, set like a cover: what Timbuktu is in plain words, the name huge behind a
  * stage microphone in 3D, the kinds of things you can book, and the next real show.
- * Scrolling turns the microphone, then silk curtains close over the stage and open
- * again on the listings, which have slid in underneath.
+ * Scrolling turns the microphone and slides the name behind it, then the curtain closes.
  */
 export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
     const section = useRef<HTMLElement>(null);
-    const pinned = useRef<HTMLDivElement>(null);
     const stage = useRef<HTMLDivElement>(null);
-    const micProgress = useRef(0);
-    const open = useRef(1);
-    const flags = useRef({ mic: true, curtains: false, mounted: false, hidden: false });
-    const [mic, setMic] = useState(true);
-    const [curtains, setCurtains] = useState(false);
-    const [mountCurtains, setMountCurtains] = useState(false);
-    const [webgl, setWebgl] = useState<boolean | null>(null);
-    const palette = usePalette();
-    useEffect(() => setWebgl(canUseWebGL()), []);
+    const progress = useRef(0);
+    const liveRef = useRef(true);
+    const hiddenRef = useRef(false);
+    const [live, setLive] = useState(true);
 
     useLayoutEffect(() => {
         const el = section.current;
@@ -140,8 +118,8 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                 });
             });
             if (reduced) return;
-            // One scroll drives three things: the microphone turns (first half), the curtains
-            // close (to 72%), and they open again on the listings (from 78% to the end).
+            // The first part of the pin turns the microphone (read by the scene) and slides the
+            // name behind it; then the curtain closes over all of it (see Curtain).
             gsap.to($('[data-hero-track]'), {
                 xPercent: -22,
                 ease: 'none',
@@ -152,20 +130,18 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                     scrub: true,
                     onUpdate: (self) => {
                         const p = self.progress;
-                        const f = flags.current;
-                        micProgress.current = clamp01(p / 0.5);
-                        open.current = p < 0.75 ? 1 - smooth(clamp01((p - 0.5) / 0.22)) : smooth(clamp01((p - 0.78) / 0.22));
-                        pinned.current?.style.setProperty('--open', String(open.current));
-                        const hide = p > 0.73;
-                        if (hide !== f.hidden && stage.current) {
-                            f.hidden = hide;
+                        progress.current = Math.min(1, p / CLOSE_FROM);
+                        const next = p < 0.985;
+                        if (next !== liveRef.current) {
+                            liveRef.current = next;
+                            setLive(next);
+                        }
+                        // Once the curtain is shut the stage goes, and the listings are underneath.
+                        const hide = p > 0.985;
+                        if (hide !== hiddenRef.current && stage.current) {
+                            hiddenRef.current = hide;
                             stage.current.style.visibility = hide ? 'hidden' : 'visible';
                         }
-                        const m = p < 0.74;
-                        if (m !== f.mic) setMic((f.mic = m));
-                        const c = p > 0.4 && p < 0.999;
-                        if (c !== f.curtains) setCurtains((f.curtains = c));
-                        if (!f.mounted && p > 0.08) setMountCurtains((f.mounted = true));
                     },
                 },
             });
@@ -177,8 +153,8 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
     }, [reduced]);
 
     return (
-        <section ref={section} data-tone="dark" className={cn('relative isolate text-white', reduced ? 'bg-navy-950' : 'z-10 h-[260vh]')}>
-            <div ref={pinned} className={cn('pointer-events-none top-0 h-[100dvh] min-h-[36rem] overflow-hidden', reduced ? 'relative' : 'sticky')}>
+        <section ref={section} data-tone="dark" data-curtain-close className={cn('relative isolate text-white', reduced ? 'bg-navy-950' : 'z-10 h-[280vh]')}>
+            <div className={cn('pointer-events-none top-0 h-[100dvh] min-h-[36rem] overflow-hidden', reduced ? 'relative' : 'sticky')}>
                 <div ref={stage} className="pointer-events-auto absolute inset-0 isolate flex flex-col bg-navy-950">
                     {/* Sauti za Busara in Stone Town, in its own colours, darkened only where the words sit. */}
                     <div aria-hidden="true" className="absolute inset-0 -z-20">
@@ -202,7 +178,7 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                     </div>
 
                     <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-                        <StageObject progress={micProgress} live={mic} night reduced={reduced} />
+                        <StageObject progress={progress} live={live} night reduced={reduced} />
                     </div>
 
                     <Container className="relative flex flex-1 flex-col justify-between pt-20 pb-6 md:pt-28 md:pb-10">
@@ -263,19 +239,6 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                     </Container>
                 </div>
 
-                {/* The curtains, over everything in the pinned frame. */}
-                {!reduced && (
-                    <div aria-hidden="true" className="absolute inset-0">
-                        {webgl === false && <CssCurtains />}
-                        {webgl && mountCurtains && (
-                            <SceneBoundary onFail={() => setWebgl(false)}>
-                                <Suspense fallback={null}>
-                                    <CurtainStage key={palette} open={open} live={curtains} reduced={reduced} />
-                                </Suspense>
-                            </SceneBoundary>
-                        )}
-                    </div>
-                )}
             </div>
         </section>
     );

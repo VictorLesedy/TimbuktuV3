@@ -1,4 +1,5 @@
 import { BusyWeek } from '@/components/landing/busy-week';
+import { Curtain } from '@/components/landing/curtain';
 import { Entertainers, Faq, Finale, LandingFooter } from '@/components/landing/closing';
 import { FourWays } from '@/components/landing/four-ways';
 import { Hero } from '@/components/landing/hero';
@@ -67,7 +68,10 @@ export default function Home() {
             const update = () => {
                 if (!nav || !sections.length) return;
                 let current = sections[0]!;
-                for (const section of sections) if (section.getBoundingClientRect().top <= 32) current = section;
+                for (const section of sections) {
+                    const delay = (Number(section.dataset.toneDelay ?? 0) / 100) * window.innerHeight;
+                    if (section.getBoundingClientRect().top + delay <= 32) current = section;
+                }
                 nav.dataset.tone = current.dataset.tone;
                 nav.dataset.solid = current === sections[0] && window.scrollY < 8 ? 'false' : 'true';
             };
@@ -125,7 +129,17 @@ export default function Home() {
                 <Nav />
                 <main>
                     <Hero reduced={reduced} next={data.next} />
-                    <Browse listings={data.live} signals={signals} underCurtain={!reduced} />
+                    {reduced ? (
+                        <Browse listings={data.live} signals={signals} />
+                    ) : (
+                        // The listings start under the hero's last screen, so they are in place when
+                        // the curtain shuts, and hold for 70vh while it opens on them.
+                        <div data-tone="light" data-tone-delay="40" data-curtain-open data-hold="70" className="relative z-0 -mt-[100dvh]">
+                            <span id="browse" aria-hidden="true" className="absolute top-[70dvh]" />
+                            <Browse listings={data.live} signals={signals} underCurtain />
+                            <div aria-hidden="true" className="h-[70dvh]" />
+                        </div>
+                    )}
                     <Turn event={data.event} venue={data.venue} venueSignals={data.venue ? signals.get(data.venue.id) : undefined} />
                     <BusyWeek listings={data.live} signals={signals} />
                     <FourWays event={data.event} venue={data.venue} service={data.service} pro={data.pro} signals={signals} />
@@ -134,6 +148,7 @@ export default function Home() {
                     <Finale reduced={reduced} />
                 </main>
                 <LandingFooter />
+                {!reduced && <Curtain />}
                 <DemoControls />
             </div>
         </>
