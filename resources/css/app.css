@@ -1,0 +1,259 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/red-hat-display';
+@import '@fontsource-variable/red-hat-text';
+
+/* Dark mode follows data-mode on <html>, set before paint from the saved choice or the system. */
+@custom-variant dark (&:where([data-mode='dark'], [data-mode='dark'] *):not(:where([data-tone='light'], [data-tone='light'] *)));
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme inline {
+    --font-sans: 'Red Hat Text Variable', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-heading: 'Red Hat Display Variable', 'Segoe UI', Roboto, Arial, sans-serif;
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-live: var(--live);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--card);
+    --color-sidebar-foreground: var(--foreground);
+    --color-sidebar-primary: var(--primary);
+    --color-sidebar-primary-foreground: var(--primary-foreground);
+    --color-sidebar-accent: var(--secondary);
+    --color-sidebar-accent-foreground: var(--foreground);
+    --color-sidebar-border: var(--border);
+    --color-sidebar-ring: var(--ring);
+
+    /* The brand ramp and its accent come from the active palette (data-palette on <html>). The names stay navy/peri for history. */
+    --color-navy-950: var(--b-950);
+    --color-navy-900: var(--b-900);
+    --color-navy-800: var(--b-800);
+    --color-navy-700: var(--b-700);
+    --color-navy-600: var(--b-600);
+    --color-navy-400: var(--b-400);
+    --color-navy-200: var(--b-200);
+    --color-navy-100: var(--b-100);
+    --color-navy-50: var(--b-50);
+    --color-peri-100: var(--a-100);
+    --color-peri-200: var(--a-200);
+    --color-peri-300: var(--a-300);
+    --color-peri-400: var(--a-400);
+    --color-gray-50: #f4f5f7;
+    --color-gray-100: #e9ebef;
+    --color-gray-200: #e3e6ec;
+    --color-gray-400: #8c94a6;
+    --color-gray-600: #5a6275;
+
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.6);
+    --radius-3xl: calc(var(--radius) * 2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+
+    --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Palettes. Each is a dark-to-light ramp of one hue, plus one accent that is never beige, cream or brass. */
+:root,
+[data-palette='ember'] {
+    --b-950: #0a0a0a; --b-900: #141414; --b-800: #1f1f1f; --b-700: #2b2b2b; --b-600: #3d3d3d; --b-400: #8a8a8a; --b-200: #d4d4d4; --b-100: #ebebeb; --b-50: #f6f6f6;
+    --a-100: #ffe6d5; --a-200: #ffc59e; --a-300: #ff7a1a; --a-400: #ff6a00;
+}
+[data-palette='crimson'] {
+    --b-950: #0b0909; --b-900: #161112; --b-800: #221a1b; --b-700: #2e2324; --b-600: #403334; --b-400: #8f8183; --b-200: #d8cfd0; --b-100: #ece6e7; --b-50: #f7f3f3;
+    --a-100: #ffe1e3; --a-200: #ffb3b9; --a-300: #ff3340; --a-400: #e6192a;
+}
+[data-palette='navy'] {
+    --b-950: #070f26; --b-900: #0d1c42; --b-800: #16295c; --b-700: #22397a; --b-600: #2f4a96; --b-400: #5c77bd; --b-200: #b9c6e6; --b-100: #dde4f3; --b-50: #eef2fa;
+    --a-100: #e3e9fb; --a-200: #c9d4f6; --a-300: #a9bcf5; --a-400: #8aa2ee;
+}
+[data-palette='cobalt'] {
+    --b-950: #050b3b; --b-900: #1230c9; --b-800: #1a3ce0; --b-700: #2f53ec; --b-600: #4d6cf2; --b-400: #8ea2f7; --b-200: #c9d2fb; --b-100: #e1e6fd; --b-50: #f0f3ff;
+    --a-100: #fff7cc; --a-200: #ffef99; --a-300: #ffe14d; --a-400: #ffd60a;
+}
+[data-palette='forest'] {
+    --b-950: #04140e; --b-900: #0b3324; --b-800: #114631; --b-700: #185a3f; --b-600: #217150; --b-400: #4f9e7b; --b-200: #b4dcc8; --b-100: #d9eee3; --b-50: #edf7f1;
+    --a-100: #f3fbd6; --a-200: #e6f6a8; --a-300: #d3ee6b; --a-400: #bde23a;
+}
+[data-palette='pink'] {
+    --b-950: #0a0a0f; --b-900: #16161f; --b-800: #23232f; --b-700: #33334a; --b-600: #4a4a66; --b-400: #8b8ba3; --b-200: #cfcfdc; --b-100: #e7e7ee; --b-50: #f4f4f7;
+    --a-100: #ffe0ee; --a-200: #ffb8d6; --a-300: #ff7ab3; --a-400: #ff3d8f;
+}
+[data-palette='bahari'] {
+    --b-950: #021a26; --b-900: #00384f; --b-800: #004d6b; --b-700: #006a91; --b-600: #0088b8; --b-400: #4cc0e6; --b-200: #b3e6f6; --b-100: #d9f2fa; --b-50: #eef9fd;
+    --a-100: #fff6cc; --a-200: #ffec99; --a-300: #fde14f; --a-400: #fcd116;
+}
+
+/* Shape rule: buttons and chips are pills, cards 16px, inputs 10px.
+   Light-toned landing sections keep the light tokens even when the app is dark. */
+:root,
+[data-mode='light'],
+[data-tone='light'] {
+    color-scheme: light;
+    --radius: 0.625rem;
+    --background: #f4f5f7;
+    --foreground: var(--b-900);
+    --card: #ffffff;
+    --card-foreground: var(--b-900);
+    --popover: #ffffff;
+    --popover-foreground: var(--b-900);
+    --primary: var(--b-900);
+    --primary-foreground: #ffffff;
+    --secondary: #e9ebef;
+    --secondary-foreground: var(--b-900);
+    --muted: #e9ebef;
+    --muted-foreground: #5a6275;
+    --accent: var(--b-50);
+    --accent-foreground: var(--b-900);
+    --destructive: #c4283f;
+    --border: #e3e6ec;
+    --input: #d3d8e1;
+    --ring: var(--b-600);
+    --live: var(--b-600);
+    --chart-1: var(--b-900);
+    --chart-2: var(--a-400);
+    --chart-3: var(--b-400);
+    --chart-4: #8c94a6;
+    --chart-5: var(--b-200);
+    --shadow: rgb(7 15 38 / 0.12);
+}
+
+[data-mode='dark'] {
+    color-scheme: dark;
+    --background: var(--b-950);
+    --foreground: #f4f5f7;
+    --card: var(--b-900);
+    --card-foreground: #f4f5f7;
+    --popover: var(--b-800);
+    --popover-foreground: #f4f5f7;
+    --primary: #ffffff;
+    --primary-foreground: var(--b-900);
+    --secondary: var(--b-800);
+    --secondary-foreground: #f4f5f7;
+    --muted: var(--b-800);
+    --muted-foreground: var(--b-200);
+    --accent: var(--b-800);
+    --accent-foreground: #f4f5f7;
+    --destructive: #ff7a8c;
+    --border: rgb(185 198 230 / 0.14);
+    --input: rgb(185 198 230 / 0.22);
+    --ring: var(--a-300);
+    --live: var(--a-300);
+    --chart-1: var(--a-300);
+    --chart-2: var(--b-400);
+    --chart-3: #f4f5f7;
+    --chart-4: #8c94a6;
+    --chart-5: var(--b-200);
+    --shadow: rgb(0 0 0 / 0.5);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    html {
+        @apply bg-background font-sans;
+        -webkit-text-size-adjust: 100%;
+        scrollbar-color: var(--color-gray-400) var(--background);
+    }
+    body {
+        @apply bg-background text-foreground antialiased;
+        overflow-x: hidden;
+    }
+    ::selection {
+        background: var(--color-peri-300);
+        color: var(--color-navy-900);
+    }
+    :focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+    }
+    h1,
+    h2,
+    h3 {
+        text-wrap: balance;
+    }
+    p {
+        text-wrap: pretty;
+    }
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+    input,
+    textarea {
+        caret-color: var(--ring);
+    }
+}
+
+@layer utilities {
+    .font-display {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+    }
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+    .scrollbar-none {
+        scrollbar-width: none;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+    .shadow-card {
+        box-shadow: 0 10px 30px -14px var(--shadow);
+    }
+    .shadow-float {
+        box-shadow: 0 30px 60px -20px var(--shadow);
+    }
+}
+
+/* Film grain on the landing, on a fixed layer so scrolling never repaints it. */
+.grain {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
