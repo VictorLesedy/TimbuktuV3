@@ -134,13 +134,13 @@ export default function Explore() {
                         className="scrollbar-none w-full justify-start overflow-x-auto"
                         aria-label="Kind"
                     >
-                        <ToggleGroupItem value={ALL} className="h-10 flex-none px-4">
+                        <ToggleGroupItem value={ALL} className="flex-none">
                             Everything
                         </ToggleGroupItem>
                         {KINDS.map((k) => {
                             const Icon = KIND_INFO[k].icon;
                             return (
-                                <ToggleGroupItem key={k} value={k} className="h-10 flex-none gap-2 px-4">
+                                <ToggleGroupItem key={k} value={k} className="flex-none">
                                     <Icon className="size-4" aria-hidden="true" />
                                     {KIND_INFO[k].plural}
                                 </ToggleGroupItem>
@@ -150,7 +150,7 @@ export default function Explore() {
 
                     <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
                         <Select value={city || ALL} onValueChange={(v) => setQuery({ city: v === ALL ? null : v })}>
-                            <SelectTrigger className="h-10 w-full sm:w-44" aria-label="City">
+                            <SelectTrigger className="w-full sm:w-44" aria-label="City">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -172,7 +172,7 @@ export default function Explore() {
                         />
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button variant="outline" className="h-10 justify-start">
+                                <Button variant="outline" className="justify-start">
                                     <BanknotesIcon />
                                     <span className="truncate">{priceLabel}</span>
                                 </Button>
@@ -191,7 +191,7 @@ export default function Explore() {
                             </PopoverContent>
                         </Popover>
                         <Select value={busy ?? ALL} onValueChange={(v) => setQuery({ busy: v === ALL ? null : v })}>
-                            <SelectTrigger className="h-10 w-full sm:w-52" aria-label="Busiest day">
+                            <SelectTrigger className="w-full sm:w-52" aria-label="Busiest day">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>

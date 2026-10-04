@@ -142,7 +142,7 @@ export default function Ambassador() {
                     Your link
                 </h2>
                 <div className="flex flex-col gap-2 sm:flex-row">
-                    <Input readOnly value={link} aria-label="Your ambassador link" className="h-11 border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground" onFocus={(e) => e.target.select()} />
+                    <Input readOnly value={link} aria-label="Your ambassador link" className="border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground" onFocus={(e) => e.target.select()} />
                     <Button variant="secondary" size="lg" className="h-11" onClick={copy}>
                         <ClipboardDocumentIcon />
                         Copy

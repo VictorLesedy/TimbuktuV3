@@ -198,7 +198,7 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                                     {KINDS.map((k) => {
                                         const info = KIND_INFO[k];
                                         return (
-                                            <Button key={k} asChild variant="outline" size="sm" className="border-white/25 bg-navy-950/60 text-white hover:bg-white hover:text-navy-900">
+                                            <Button key={k} asChild variant="secondary" size="sm">
                                                 <Link href={`/explore?kind=${k}`}>
                                                     <info.icon aria-hidden="true" />
                                                     {HERO_KINDS[k]}
@@ -208,7 +208,7 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                                     })}
                                 </nav>
                                 <div data-hero-rest className="flex flex-wrap items-center gap-x-6 gap-y-3">
-                                    <Button asChild variant="accent" size="lg" className="h-12 px-6 text-base">
+                                    <Button asChild variant="accent" size="xl">
                                         <a href="#browse">
                                             See what’s on
                                             <ArrowRightIcon aria-hidden="true" />

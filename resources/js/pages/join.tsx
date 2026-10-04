@@ -156,7 +156,7 @@ export default function Join() {
                                     </Field>
                                     <Field id="join-city" label="City">
                                         <Select value={city} onValueChange={(v) => setCity(v as City)}>
-                                            <SelectTrigger id="join-city" className="h-11 w-full">
+                                            <SelectTrigger id="join-city" className="w-full">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -178,7 +178,7 @@ export default function Join() {
                                         <p className="font-medium">Favourite artists</p>
                                         <ToggleGroup type="multiple" variant="outline" value={artists} onValueChange={setArtists} className="flex flex-wrap justify-start gap-2">
                                             {ARTISTS.map((a) => (
-                                                <ToggleGroupItem key={a} value={a} className="h-9 flex-none rounded-full! border px-4">
+                                                <ToggleGroupItem key={a} value={a} className="flex-none">
                                                     {a}
                                                 </ToggleGroupItem>
                                             ))}

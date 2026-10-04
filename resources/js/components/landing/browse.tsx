@@ -110,20 +110,20 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
                 </div>
 
                 {/* The filters stay in reach under the header while the grid scrolls. */}
-                <div className="sticky top-16 z-20 -mx-4 mt-10 border-b border-gray-200 bg-gray-50/95 px-4 py-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                <div className="sticky top-16 z-20 -mx-4 mt-10 border-b bg-gray-50 px-4 py-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
                         <div className="relative lg:w-72">
-                            <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-                            <Input value={f.q} onChange={(e) => set({ q: e.target.value })} placeholder="Search by name or area" aria-label="Search by name or area" className="h-10 rounded-full bg-card pl-11" />
+                            <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                            <Input value={f.q} onChange={(e) => set({ q: e.target.value })} placeholder="Search by name or area" aria-label="Search by name or area" className="bg-background pl-9" />
                         </div>
                         <ToggleGroup
                             type="single"
-                            variant="pill"
-                            size="lg"
+                            variant="outline"
+                            spacing={0}
                             value={f.kind ?? ALL}
                             onValueChange={(v) => set({ kind: !v || v === ALL ? null : (v as BrowseFilters['kind']) })}
                             aria-label="Kind"
-                            className="w-full overflow-x-auto pb-1 scrollbar-none lg:w-auto lg:pb-0"
+                            className="max-w-full overflow-x-auto bg-background scrollbar-none"
                         >
                             <ToggleGroupItem value={ALL}>Everything</ToggleGroupItem>
                             {KINDS.map((k) => {
@@ -139,7 +139,7 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
                     </div>
                     <div className="mt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
                         <Select value={f.when} onValueChange={(v) => set({ when: v as When })}>
-                            <SelectTrigger className="h-10 w-full rounded-full bg-card sm:w-40" aria-label="When">
+                            <SelectTrigger className="w-full bg-background sm:w-40" aria-label="When">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -151,7 +151,7 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
                             </SelectContent>
                         </Select>
                         <Select value={f.city || ALL} onValueChange={(v) => set({ city: v === ALL ? '' : v })}>
-                            <SelectTrigger className="h-10 w-full rounded-full bg-card sm:w-44" aria-label="City">
+                            <SelectTrigger className="w-full bg-background sm:w-44" aria-label="City">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -165,7 +165,7 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
                         </Select>
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button variant="outline" size="lg" className="justify-start bg-card">
+                                <Button variant="outline" className="justify-start">
                                     <AdjustmentsHorizontalIcon />
                                     <span className="truncate">{priceLabel}</span>
                                 </Button>
@@ -184,7 +184,7 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
                             </PopoverContent>
                         </Popover>
                         <Select value={f.busy === null ? ALL : String(f.busy)} onValueChange={(v) => set({ busy: v === ALL ? null : Number(v) })}>
-                            <SelectTrigger className="h-10 w-full rounded-full bg-card sm:w-48" aria-label="Busiest day">
+                            <SelectTrigger className="w-full bg-background sm:w-48" aria-label="Busiest day">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -197,7 +197,7 @@ export function Browse({ listings, signals, underCurtain = false }: { listings: 
                             </SelectContent>
                         </Select>
                         <Select value={f.sort} onValueChange={(v) => set({ sort: v as Sort })}>
-                            <SelectTrigger className="h-10 w-full rounded-full bg-card sm:ml-auto sm:w-40" aria-label="Sort by">
+                            <SelectTrigger className="w-full bg-background sm:ml-auto sm:w-40" aria-label="Sort by">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent align="end">

@@ -1,5 +1,6 @@
 import { Container } from '@/components/container';
 import { Wordmark } from '@/components/shell/wordmark';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { initials } from '@/lib/format';
 import { useApp, useCurrentFan } from '@/store/app-store';
@@ -38,11 +39,11 @@ export function Nav() {
                             <Link href="/me?tab=tickets" className="hidden rounded-md px-3 py-2 text-sm font-medium opacity-75 hover:opacity-100 sm:block">
                                 My tickets
                             </Link>
-                            <Button asChild variant="accent" size="icon" className="font-bold">
-                                <Link href="/me" aria-label="Your profile">
-                                    {initials(fan.name)}
-                                </Link>
-                            </Button>
+                            <Link href="/me" aria-label="Your profile" className="rounded-full">
+                                <Avatar>
+                                    <AvatarFallback className="bg-peri-300 font-semibold text-on-peri">{initials(fan.name)}</AvatarFallback>
+                                </Avatar>
+                            </Link>
                         </>
                     ) : (
                         <Button

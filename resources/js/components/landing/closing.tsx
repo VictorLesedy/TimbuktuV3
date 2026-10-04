@@ -64,7 +64,7 @@ export function Entertainers({ settings }: { settings: Settings }) {
                     <p className="mt-4 max-w-[42ch] text-peri-200">
                         {low === high ? `A ${pct(low)} commission` : `A commission of ${pct(low)} to ${pct(high)}`} on each sale, taken before payout. No monthly fee, and fans pay nothing extra.
                     </p>
-                    <Button asChild variant="accent" size="lg" className="mt-8 h-12 px-6 text-base">
+                    <Button asChild variant="accent" size="xl" className="mt-8">
                         <Link href="/join?as=entertainer">
                             List your events
                             <ArrowRightIcon aria-hidden="true" />
@@ -187,7 +187,7 @@ export function Finale({ reduced }: { reduced: boolean }) {
                     </h2>
                     <p className="mt-5 max-w-[36ch] text-lg text-peri-100">Find something on this weekend, pay online, and show the code at the gate.</p>
                     <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-                        <Button asChild variant="accent" size="lg" className="h-12 px-6 text-base">
+                        <Button asChild variant="accent" size="xl">
                             <a href="#browse">
                                 See what’s on
                                 <ArrowRightIcon aria-hidden="true" />

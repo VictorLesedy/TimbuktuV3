@@ -40,7 +40,7 @@ function Panel({ kind, listing, children }: { kind: Kind; listing: Listing; chil
                     For example, {listing.title} in {listing.area}:
                 </p>
                 <ul className="divide-y divide-white/15">{children}</ul>
-                <Button asChild variant="light" size="lg" className="h-12 px-6 text-base">
+                <Button asChild variant="light" size="xl">
                     <Link href={listingUrl(listing)}>
                         {info.verb}
                         <ArrowUpRightIcon aria-hidden="true" />
