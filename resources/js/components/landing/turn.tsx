@@ -24,7 +24,7 @@ export function Turn({ event, venue, venueSignals }: { event?: Listing; venue?: 
         {
             sw: 'Bei gani?',
             en: 'How much is it?',
-            answer: 'Every listing shows its prices in shillings before you choose anything.',
+            answer: 'You can see the price before you decide. No awkward messages needed.',
             ...(event && {
                 proof: event.event ? `${event.title}: ${event.event.tiers.map((t) => `${t.name} ${tsh(t.price)}`).join(', ')}.` : `${event.title}: from ${tsh(priceFrom(event))}.`,
                 href: listingUrl(event),
@@ -33,7 +33,7 @@ export function Turn({ event, venue, venueSignals }: { event?: Listing; venue?: 
         {
             sw: 'Kuna watu?',
             en: 'Will it be busy?',
-            answer: 'Every place shows when it usually fills up, worked out from real check-ins at the door.',
+            answer: 'You can tell when a place usually gets busy, based on real check-ins.',
             ...(venue &&
                 venueSignals &&
                 venueSignals.checkIns > 0 && {
@@ -44,8 +44,8 @@ export function Turn({ event, venue, venueSignals }: { event?: Listing; venue?: 
         {
             sw: 'Tiketi wapi?',
             en: 'Where do I get a ticket?',
-            answer: 'Right there. Pay online and the QR code arrives straight away.',
-            proof: 'Mobile money or a bank card. A declined payment takes nothing.',
+            answer: 'Right here. Pay online and your QR code comes through straight away.',
+            proof: 'Use mobile money or a bank card. If the payment fails, you won’t be charged.',
         },
     ];
 

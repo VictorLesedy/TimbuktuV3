@@ -14,7 +14,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     return (
         <TooltipProvider delayDuration={300}>
             {children}
-            <Toaster position="top-center" />
+            <Toaster richColors position="top-center" />
         </TooltipProvider>
     );
 }
