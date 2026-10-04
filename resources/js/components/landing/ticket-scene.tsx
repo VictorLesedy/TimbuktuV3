@@ -1,13 +1,15 @@
 /*
- * The close: a gold satin ticket. A finely divided plane cut to a ticket's outline
- * (notches, perforations) by an alpha map, with a silk sheen. It ripples gently at rest,
+ * The close: a gold satin ticket with its QR code on the stub. A finely divided plane cut
+ * to a ticket's outline (notches, perforations) by an alpha map, with a silk sheen. It ripples gently at rest,
  * and each scroll gives it a push: a spring turns the scroll speed into a jiggle that
  * shakes through the cloth and settles. Built in code; nothing is fetched at runtime.
  */
 import { Environment, Lightformer } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { useMemo, useRef, type RefObject } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
+import { createElement, useMemo, useRef, type RefObject } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { CanvasTexture, Color, DoubleSide, MeshPhysicalMaterial, NeutralToneMapping, PlaneGeometry, SRGBColorSpace } from 'three';
 import type { Group } from 'three';
 
@@ -81,15 +83,22 @@ function textures() {
     f.fillText('KARIBU', 82, h / 2 + 10);
     f.font = '600 40px "Red Hat Text Variable", "Segoe UI", sans-serif';
     f.fillText('ADMIT ONE · SCANNED AT THE GATE', 90, h - 120);
-    f.save();
-    f.translate(stubX + (w - stubX) / 2, h / 2);
-    f.rotate(-Math.PI / 2);
+    // Stub: the QR code staff scan at the gate, on a pale panel with a quiet zone round it.
+    const stubCx = stubX + (w - stubX) / 2;
+    const panel = 270;
+    const qr = 222;
+    const panelY = 92;
+    f.fillStyle = '#fbf1d6';
+    f.beginPath();
+    f.roundRect(stubCx - panel / 2, panelY, panel, panel, 22);
+    f.fill();
+    f.fillStyle = ink;
     f.textAlign = 'center';
-    f.font = '800 70px "Red Hat Display Variable", "Arial Black", sans-serif';
-    f.fillText('ADMIT ONE', 0, -40);
-    f.font = '600 34px "Red Hat Text Variable", "Segoe UI", sans-serif';
-    f.fillText('No. 0042', 0, 40);
-    f.restore();
+    f.font = '800 58px "Red Hat Display Variable", "Arial Black", sans-serif';
+    f.fillText('ADMIT ONE', stubCx, panelY + panel + 78);
+    f.font = '600 32px "Red Hat Text Variable", "Segoe UI", sans-serif';
+    f.fillText('No. 0042', stubCx, panelY + panel + 136);
+    f.textAlign = 'start';
 
     // Foil: where the stamp sits (the name, the border, the stub), white on black. It
     // drives the iridescent foil in the fragment shader and doubles as the emboss map.
@@ -106,13 +115,10 @@ function textures() {
     o.textBaseline = 'middle';
     o.font = '900 190px "Red Hat Display Variable", "Arial Black", sans-serif';
     o.fillText('KARIBU', 82, h / 2 + 10);
-    o.save();
-    o.translate(stubX + (w - stubX) / 2, h / 2);
-    o.rotate(-Math.PI / 2);
     o.textAlign = 'center';
-    o.font = '800 70px "Red Hat Display Variable", "Arial Black", sans-serif';
-    o.fillText('ADMIT ONE', 0, -40);
-    o.restore();
+    o.font = '800 58px "Red Hat Display Variable", "Arial Black", sans-serif';
+    o.fillText('ADMIT ONE', stubCx, panelY + panel + 78);
+    o.textAlign = 'start';
 
     const map = new CanvasTexture(face);
     map.colorSpace = SRGBColorSpace;
@@ -120,6 +126,16 @@ function textures() {
     const alpha = new CanvasTexture(shape);
     const foil = new CanvasTexture(foilCanvas);
     foil.anisotropy = 8;
+
+    // The code itself, drawn from qrcode.react's SVG once it has loaded, in the engraving's ink.
+    let svg = renderToStaticMarkup(createElement(QRCodeSVG, { value: 'TBK-KARIBU-0042', size: qr, level: 'M', bgColor: 'transparent', fgColor: '#3d2a0a' }));
+    if (!svg.includes('xmlns=')) svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+    const code = new Image();
+    code.onload = () => {
+        f.drawImage(code, stubCx - qr / 2, panelY + (panel - qr) / 2, qr, qr);
+        map.needsUpdate = true;
+    };
+    code.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
     return { map, alpha, foil };
 }
 
