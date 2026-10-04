@@ -1,6 +1,6 @@
 import { Container } from '@/components/container';
 import { Photo } from '@/components/listing/photo';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatTime, photoUrl, tsh } from '@/lib/format';
 import { KIND_INFO, listingUrl } from '@/lib/kinds';
@@ -220,17 +220,29 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                                 </div>
                             </div>
                             {next?.event && (
-                                <Link data-hero-rest href={listingUrl(next)} className="group block w-full rounded-2xl md:w-80">
-                                    <Card className="flex-row items-center gap-4 rounded-2xl bg-white p-3 pr-5 text-navy-900 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.5)] ring-0">
-                                        <Photo photo={next.photos[0]!} width={200} ratio={1} className="size-16 shrink-0 rounded-xl" sizes="64px" eager />
-                                        <span className="min-w-0 flex-1">
-                                            <span className="block text-sm text-gray-600">
-                                                Next up, {DATE.format(new Date(next.event.startsAt))}, {formatTime(next.event.startsAt)}
+                                // The next real show as a dark ticket stub: photo inset 8px, when, what, where, and the price beside the action.
+                                <Link data-hero-rest href={listingUrl(next)} className="group block w-full shrink-0 rounded-[1.25rem] md:w-[25rem]">
+                                    <Card className="flex-row items-stretch gap-0 rounded-[1.25rem] bg-navy-900 px-(--card-spacing) text-white shadow-[0_24px_48px_-24px_rgb(0_0_0/0.7)] ring-white/10 transition-colors duration-200 [--card-spacing:--spacing(2)] group-hover:bg-navy-800">
+                                        <Photo photo={next.photos[0]!} width={240} ratio={1} className="aspect-auto! w-24 shrink-0 rounded-[0.75rem] sm:w-28" sizes="112px" eager />
+                                        <span className="flex min-w-0 flex-1 flex-col justify-between gap-3 py-1.5 pr-1.5 pl-4">
+                                            <span className="block">
+                                                <span className="block text-sm text-peri-200 tabular">
+                                                    Next up · {DATE.format(new Date(next.event.startsAt))}, {formatTime(next.event.startsAt)}
+                                                </span>
+                                                <span className="mt-1 block truncate text-base font-semibold">{next.title}</span>
+                                                <span className="block truncate text-sm text-navy-200">{next.event.place}</span>
                                             </span>
-                                            <span className="block truncate font-semibold">{next.title}</span>
-                                            <span className="block text-sm text-gray-600">from {tsh(priceFrom(next))}</span>
+                                            <span className="flex items-center justify-between gap-3">
+                                                <span className="text-sm whitespace-nowrap">
+                                                    <span className="text-navy-200">From </span>
+                                                    <span className="font-semibold tabular">{tsh(priceFrom(next))}</span>
+                                                </span>
+                                                <span className={buttonVariants({ variant: 'accent', size: 'sm' })}>
+                                                    Get tickets
+                                                    <ArrowRightIcon className="transition-transform duration-200 ease-out group-hover:translate-x-0.5" aria-hidden="true" />
+                                                </span>
+                                            </span>
                                         </span>
-                                        <ArrowRightIcon className="size-5 shrink-0 text-navy-900 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
                                     </Card>
                                 </Link>
                             )}
