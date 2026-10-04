@@ -59,12 +59,15 @@ export function Curtain() {
         const hero = document.querySelector<HTMLElement>('[data-curtain-close]');
         const stage = document.querySelector<HTMLElement>('[data-curtain-open]');
         if (!hero || !stage) return;
-        const hold = Number(stage.dataset.hold ?? 70);
+        const hold = Number(stage.dataset.hold ?? 60);
         const state = { close: 0, open: 0 };
         const apply = () => {
-            open.current = state.open > 0 ? state.open : 1 - state.close;
-            frame.current?.style.setProperty('--open', String(open.current));
-            const show = open.current < 0.999;
+            const x = state.open > 0 ? state.open : 1 - state.close;
+            // The shader's cloth has fully cleared by 0.82, so it is fed 0 to 0.84: the satin
+            // starts moving the moment the scroll does and is gone exactly when it ends.
+            open.current = x * 0.84;
+            frame.current?.style.setProperty('--open', String(x));
+            const show = x < 0.999;
             if (show !== shown.current) {
                 shown.current = show;
                 setVisible(show);
@@ -85,7 +88,7 @@ export function Curtain() {
             start: 'top top',
             end: `top -${hold}%`,
             onUpdate: (self) => {
-                state.open = self.progress <= 0 ? 0 : inOut(clamp01((self.progress - 0.04) / 0.9));
+                state.open = self.progress <= 0 ? 0 : inOut(self.progress);
                 apply();
             },
             onLeaveBack: () => {

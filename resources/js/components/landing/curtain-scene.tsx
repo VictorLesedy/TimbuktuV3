@@ -1,7 +1,7 @@
 /*
  * The stage curtain between the hero and the listings, drawn entirely in one fragment
- * shader on a full-screen quad (no mesh). Two halves of satin hang in long folds whose
- * line bends slowly along their length. As uOpen goes from 0 to 1 each half is drawn up
+ * shader on a full-screen quad (no mesh). Two halves of satin hang in a few broad folds
+ * whose line bends slowly along their length. As uOpen goes from 0 to 1 each half is drawn up
  * and out towards its top corner, like a theatre's tableau curtain: the folds gather
  * and swing diagonally towards the tie, the leading edge turns into shadow, and the
  * cloth casts a soft shadow on the page it uncovers. The cloth is lit from its slope,
@@ -29,9 +29,8 @@ const fragment = /* glsl */ `
     uniform float uOpen;
     uniform float uSwing;
     uniform vec3 uDeep;
-    uniform vec3 uShade;
+    uniform vec3 uWine;
     uniform vec3 uBase;
-    uniform vec3 uLit;
     uniform vec3 uSheen;
     uniform vec3 uGlint;
 
@@ -42,73 +41,68 @@ const fragment = /* glsl */ `
     }
 
     // Where the leading edge of a half sits at height v, in half-widths from the outer side.
+    // Fully drawn, it is well past the outer side, so neither cloth nor shadow is left on screen.
     float edgeAt(float v) {
         float a = drawn(v);
-        return 1.03 - 1.08 * a * a * (3.0 - 2.0 * a) + uSwing * (1.0 - v) * (1.0 - v);
+        return 1.06 - 1.33 * a * a * (3.0 - 2.0 * a) + uSwing * (1.0 - v) * (1.0 - v);
     }
 
-    // The cloth's height at a point of one half: s across (0 outer, 1 centre), v up.
+    // Satin: a few broad folds whose line bends slowly along their length, with two finer
+    // ripples riding on them. s runs across a half (0 outer, 1 centre), v up, e is the edge.
     float drape(float s, float v, float e) {
         float t = uTime;
-        float g = clamp(e, 0.08, 1.2);
-        float f = s / g;                            // where on the flat cloth this point comes from
-        float pull = (1.0 - v) * (1.0 - g) * 1.4;  // folds swing towards the tie as it gathers
-        float x = f * 7.5 * (1.0 + 0.25 * uAspect) + pull * 3.0;
-        float bend = 0.8 * sin(v * 2.2 + 0.6 * sin(f * 3.1 + t * 0.12) + t * 0.15) + 0.3 * sin(v * 4.3 - t * 0.1 + 2.0);
-        float h = sin(x + bend);
-        h += 0.45 * sin(x * 1.83 + bend * 1.3 + v * 0.7 + t * 0.2);
-        h += 0.16 * sin(x * 3.7 + bend * 0.7 - v * 0.4 - t * 0.17);
-        return h * (0.75 + 0.6 * (1.0 - g));         // gathered cloth folds deeper
+        float g = clamp(e, 0.1, 1.2);
+        float f = s / g;                                   // where on the flat cloth this point comes from
+        vec2 q = vec2(f * 1.2 * uAspect, v * 2.4);         // the same scale across as up, as on screen
+        float lean = 0.18 + (1.0 - v) * (1.0 - g) * 0.9;   // folds swing towards the tie as it gathers
+        vec2 r = vec2(q.x * cos(lean) - q.y * sin(lean), q.x * sin(lean) + q.y * cos(lean));
+        float bend = 0.9 * sin(r.y * 0.8 + 0.7 * sin(r.x * 0.6 + t * 0.1) + t * 0.14) + 0.35 * sin(r.y * 1.6 - t * 0.1 + 2.0);
+        float h = sin(r.x * 1.9 + bend);
+        h += 0.5 * sin(r.x * 3.3 + bend * 1.4 + r.y * 0.5 + t * 0.18);
+        h += 0.18 * sin(r.x * 6.4 + bend * 0.8 - r.y * 0.3 - t * 0.15);
+        return h * (1.0 + 0.5 * (1.0 - g));                // gathered cloth folds deeper
     }
 
     void main() {
         // Mirror the right half onto the left, so one description serves both.
-        float side = step(0.5, vUv.x);
-        float s = side > 0.5 ? (1.0 - vUv.x) * 2.0 : vUv.x * 2.0;
+        float right = step(0.5, vUv.x);
+        float s = right > 0.5 ? (1.0 - vUv.x) * 2.0 : vUv.x * 2.0;
         float v = vUv.y;
         float e = edgeAt(v);
-        // Past the half-way mark the remaining bundle also lifts towards the rail.
-        float lift = smoothstep(0.55, 1.0, uOpen);
-        float hem = lift * 1.15 * (0.55 + 0.45 * s);
         float inside = e - s;   // > 0 on the cloth
-        float above = v - hem;  // > 0 above the rising hem
-
         float px = fwidth(s) * 1.5;
-        float cloth = smoothstep(-px, px, inside) * smoothstep(-px, px, above);
+        float cloth = smoothstep(-px, px, inside);
 
-        // A soft shadow on the page just past the leading edge and under the hem.
-        float gap = max(-inside, -above);
-        float shadow = (1.0 - smoothstep(0.0, 0.09, gap)) * 0.45 * (1.0 - cloth) * step(uOpen, 0.995);
+        // A soft shadow on the page just past the leading edge, gone before the cloth is.
+        float shadow = (1.0 - smoothstep(0.0, 0.06, -inside)) * 0.4 * (1.0 - cloth) * (1.0 - smoothstep(0.55, 0.8, uOpen));
 
-        float de = 0.004;
+        // Light the cloth from its slope (per unit of the scaled space above), as satin.
+        float de = 0.003;
         float h = drape(s, v, e);
-        vec2 slope = vec2(drape(s + de, v, e) - h, drape(s, v + de, edgeAt(v + de)) - h) / de;
-        slope.x *= side > 0.5 ? -1.0 : 1.0;
-        vec3 n = normalize(vec3(-slope * vec2(0.035, 0.05), 1.0));
-        vec3 light = normalize(vec3(-0.35, 0.8, 0.5));
+        float dx = (drape(s + de, v, e) - h) / (de * 1.2 * uAspect);
+        float dy = (drape(s, v + de, edgeAt(v + de)) - h) / (de * 2.4);
+        vec2 slope = vec2(right > 0.5 ? -dx : dx, dy);
+        vec3 n = normalize(vec3(-slope * 0.6, 1.0));
+        vec3 light = normalize(vec3(-0.2, 0.8, 0.55));
         vec3 halfway = normalize(light + vec3(0.0, 0.0, 1.0));
         float diffuse = clamp(dot(n, light), 0.0, 1.0);
         float facing = max(dot(n, halfway), 0.0);
-        float sheen = pow(facing, 12.0);
-        float glint = pow(facing, 80.0);
+        float sheen = pow(facing, 14.0);
+        float glint = pow(facing, 90.0);
 
-        vec3 color = mix(uDeep, uShade, smoothstep(0.05, 0.4, diffuse));
-        color = mix(color, uBase, smoothstep(0.35, 0.7, diffuse));
-        color = mix(color, uLit, smoothstep(0.65, 0.95, diffuse));
-        color = mix(color, uSheen, sheen * 0.55);
-        color = mix(color, uGlint, glint * 0.4);
+        vec3 color = mix(uDeep, uWine, smoothstep(0.1, 0.5, diffuse));
+        color = mix(color, uBase, smoothstep(0.45, 0.88, diffuse));
+        color = mix(color, uSheen, sheen * 0.6);
+        color = mix(color, uGlint, glint * 0.45);
 
-        // The leading edge turns away into shadow; the rail and the hem sit darker.
-        color = mix(uDeep, color, smoothstep(0.0, 0.06, inside));
-        color = mix(color, uDeep, smoothstep(0.78, 1.0, v) * 0.95);
-        color = mix(color, uDeep, (1.0 - smoothstep(0.0, 0.12, above)) * 0.5);
-        // Light pools in the middle of the stage.
-        float pool = smoothstep(1.2, 0.2, length((vUv - vec2(0.5, 0.62)) * vec2(1.0, 1.3)));
-        color = mix(uDeep, color, 0.45 + 0.55 * pool);
+        // The leading edge turns away into shadow, and the top sits in the shade of the rail.
+        color = mix(uDeep, color, smoothstep(0.0, 0.03, inside));
+        color = mix(color, uDeep, smoothstep(0.88, 1.0, v) * 0.6);
+        float vignette = smoothstep(1.25, 0.3, length((vUv - 0.5) * vec2(1.1, 1.25)));
+        color = mix(uDeep, color, 0.65 + 0.35 * vignette);
 
         // Premultiplied: cloth where there is cloth, a black shadow beside it.
-        float alpha = max(cloth, shadow);
-        gl_FragColor = vec4(color * cloth, alpha);
+        gl_FragColor = vec4(color * cloth, max(cloth, shadow));
     }
 `;
 
@@ -116,27 +110,29 @@ const srgb = (hex: string) => {
     const c = new Color(hex);
     return new Vector3(c.r, c.g, c.b);
 };
-const mixHex = (a: string, b: string, t: number) => '#' + new Color(a).lerp(new Color(b), t).getHexString();
 
 function Satin({ open, reduced }: { open: RefObject<number>; reduced: boolean }) {
     const material = useRef<ShaderMaterial>(null);
     const state = useRef({ o: open.current ?? 0, last: open.current ?? 0, swing: 0, v: 0 });
     const uniforms = useMemo(() => {
-        // The ramp comes from the palette: near-black, the accent deepened, the accent, its tint.
-        const deep = paletteColor('--b-950');
-        const accent = paletteColor('--a-400');
-        const bright = paletteColor('--a-300');
+        // The ramp keeps the accent's hue at satin's lightness steps (shadow, depth, body,
+        // sheen), so a dark accent still gives vivid cloth rather than mud.
+        const hsl = { h: 0, s: 0, l: 0 };
+        new Color(paletteColor('--a-300')).getHSL(hsl);
+        const tone = (l: number) => {
+            const c = new Color().setHSL(hsl.h, Math.max(0.78, hsl.s), l);
+            return new Vector3(c.r, c.g, c.b);
+        };
         return {
             uTime: { value: 0 },
             uAspect: { value: 1 },
             uOpen: { value: 0 },
             uSwing: { value: 0 },
-            uDeep: { value: srgb(mixHex(accent, deep, 0.9)) },
-            uShade: { value: srgb(mixHex(accent, deep, 0.72)) },
-            uBase: { value: srgb(mixHex(accent, deep, 0.45)) },
-            uLit: { value: srgb(mixHex(bright, deep, 0.12)) },
-            uSheen: { value: srgb(bright) },
-            uGlint: { value: srgb(paletteColor('--a-100')) },
+            uDeep: { value: tone(0.21) },
+            uWine: { value: tone(0.29) },
+            uBase: { value: tone(0.41) },
+            uSheen: { value: tone(0.56) },
+            uGlint: { value: srgb('#f5f3f4') },
         };
     }, []);
 

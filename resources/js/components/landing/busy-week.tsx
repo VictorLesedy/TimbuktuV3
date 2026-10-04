@@ -66,9 +66,10 @@ export function BusyWeek({ listings, signals }: { listings: Listing[]; signals: 
                     {top.map(({ l, s }, i) => (
                         <li key={l.id}>
                             <Link href={listingUrl(l)} className="group block rounded-[1.75rem]">
-                                <Card className="flex-row gap-5 rounded-[1.75rem] bg-navy-800 p-4 text-white ring-white/10 transition-colors duration-200 group-hover:bg-navy-700">
-                                    <Photo photo={l.photos[0]!} width={300} ratio={1} className="size-28 shrink-0 rounded-2xl sm:size-32" sizes="128px" />
-                                    <div className="min-w-0 flex-1">
+                                {/* The photo sits 6px inside the card, its corner set inside the card's; the text keeps its own room. */}
+                                <Card className="flex-row items-stretch gap-0 rounded-[1.75rem] bg-navy-800 px-(--card-spacing) text-white ring-white/10 transition-colors duration-200 [--card-spacing:--spacing(1.5)] group-hover:bg-navy-700">
+                                    <Photo photo={l.photos[0]!} width={320} ratio={1} className="aspect-auto! w-28 shrink-0 rounded-[1.375rem] sm:w-36" sizes="144px" />
+                                    <div className="min-w-0 flex-1 py-[1.125rem] pr-2.5 pl-5">
                                         <p className="text-sm text-peri-200">
                                             Number {i + 1} on {DAY_NAMES[day]}s, {l.area}
                                         </p>

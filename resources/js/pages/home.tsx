@@ -133,11 +133,11 @@ export default function Home() {
                         <Browse listings={data.live} signals={signals} />
                     ) : (
                         // The listings start under the hero's last screen, so they are in place when
-                        // the curtain shuts, and hold for 70vh while it opens on them.
-                        <div data-tone="light" data-tone-delay="40" data-curtain-open data-hold="70" className="relative z-0 -mt-[100dvh]">
-                            <span id="browse" aria-hidden="true" className="absolute top-[70dvh]" />
+                        // the curtain shuts, and hold for 60vh while it opens on them.
+                        <div data-tone="light" data-tone-delay="40" data-curtain-open data-hold="60" className="relative z-0 -mt-[100dvh]">
+                            <span id="browse" aria-hidden="true" className="absolute top-[60dvh]" />
                             <Browse listings={data.live} signals={signals} underCurtain />
-                            <div aria-hidden="true" className="h-[70dvh]" />
+                            <div aria-hidden="true" className="h-[60dvh]" />
                         </div>
                     )}
                     <Turn event={data.event} venue={data.venue} venueSignals={data.venue ? signals.get(data.venue.id) : undefined} />
