@@ -18,7 +18,7 @@ export function SignalBadge({ badge, className }: { badge: BadgeInfo; className?
         <span
             className={cn(
                 'inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold',
-                live ? 'bg-lime text-night' : 'bg-secondary text-secondary-foreground',
+                live ? 'bg-peri-300 text-on-peri' : 'bg-secondary text-secondary-foreground',
                 className,
             )}
         >

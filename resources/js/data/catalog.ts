@@ -851,5 +851,24 @@ export function buildListings(now: number): Listing[] {
         while (end - start > DAY) end -= DAY;
         l.event.endsAt = new Date(end).toISOString();
     }
-    return listings;
+    // Every event is a series: add its two previous editions, four and eight weeks back on the
+    // same weekday, so an event page can show what already happened.
+    const past: Listing[] = [];
+    for (const l of listings) {
+        if (!l.event || l.status !== 'live') continue;
+        for (const weeks of [4, 8]) {
+            const shift = weeks * 7 * DAY;
+            const startsAt = new Date(new Date(l.event.startsAt).getTime() - shift).toISOString();
+            past.push({
+                ...l,
+                id: `${l.id}-${weeks}w`,
+                slug: `${l.slug}-${startsAt.slice(0, 10)}`,
+                featured: false,
+                photos: [...l.photos.slice(weeks / 4), ...l.photos.slice(0, weeks / 4)],
+                createdAt: new Date(new Date(l.createdAt).getTime() - shift).toISOString(),
+                event: { ...l.event, startsAt, endsAt: new Date(new Date(l.event.endsAt).getTime() - shift).toISOString() },
+            });
+        }
+    }
+    return [...listings, ...past];
 }

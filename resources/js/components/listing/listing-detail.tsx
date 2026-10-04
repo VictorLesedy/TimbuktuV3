@@ -54,7 +54,7 @@ function Stars({ n }: { n: number }) {
     );
 }
 
-function Reviews({ reviews }: { reviews: Review[] }) {
+export function Reviews({ reviews }: { reviews: Review[] }) {
     const fans = useApp((s) => s.fans);
     const [all, setAll] = useState(false);
     const shown = all ? reviews : reviews.slice(0, 4);
@@ -95,7 +95,7 @@ function Reviews({ reviews }: { reviews: Review[] }) {
     );
 }
 
-function SaveShare({ listing }: { listing: Listing }) {
+export function SaveShare({ listing }: { listing: Listing }) {
     const saved = useApp((s) => s.saves.some((v) => v.listingId === listing.id && v.fanId === s.session.fanId));
     const signedIn = useApp((s) => s.session.signedIn);
     const toggleSave = useApp((s) => s.toggleSave);

@@ -51,6 +51,7 @@ export function filterListings(listings: Listing[], signals: Map<string, Signals
     const days = daysFor(f.when, f.date);
     const out = listings.filter((l) => {
         if (l.status !== 'live') return false;
+        if (l.event && new Date(l.event.endsAt).getTime() < Date.now()) return false;
         if (f.kind && l.kind !== f.kind) return false;
         if (f.city && l.city !== f.city) return false;
         if (days.length && !days.some((d) => availableOn(l, d))) return false;
@@ -82,8 +83,8 @@ export function exploreHref(f: BrowseFilters): string {
     if (f.q.trim()) p.set('q', f.q.trim());
     if (f.kind) p.set('kind', f.kind);
     if (f.city) p.set('city', f.city);
-    const days = daysFor(f.when, f.date);
-    if (days.length === 1) p.set('date', days[0]!);
+    if (f.date) p.set('date', f.date);
+    else if (f.when !== 'any') p.set('when', f.when);
     if (f.min > 0) p.set('min', String(f.min));
     if (f.max < PRICE_STEPS.at(-1)!) p.set('max', String(f.max));
     if (f.busy !== null) p.set('busy', String(f.busy));

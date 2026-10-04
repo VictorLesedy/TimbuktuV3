@@ -30,3 +30,22 @@ export function PosterGridSkeleton({ count = 8, className }: { count?: number; c
         </ul>
     );
 }
+
+/** Holds an event page's place: badges, title, when and where, the photo, and the tickets card beside it. */
+export function EventSkeleton() {
+    return (
+        <div aria-busy="true" aria-label="Loading the event" className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-x-12">
+            <div className="space-y-4">
+                <div className="flex gap-2">
+                    <Skeleton className="h-6 w-16" />
+                    <Skeleton className="h-6 w-24" />
+                </div>
+                <Skeleton className="h-14 w-3/4" />
+                <Skeleton className="h-5 w-1/2" />
+                <Skeleton className="h-5 w-2/5" />
+                <Skeleton className="mt-4 aspect-video w-full rounded-2xl" />
+            </div>
+            <Skeleton className="h-[26rem] rounded-xl lg:col-start-2 lg:row-start-1" />
+        </div>
+    );
+}

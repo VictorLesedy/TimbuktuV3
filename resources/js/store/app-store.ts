@@ -217,7 +217,8 @@ export const useApp = create<AppState>()(
         },
         {
             name: 'timbuktu-demo',
-            version: 1,
+            // Bumped when the sample world changes shape, so saved copies are replaced.
+            version: 2,
             storage: createJSONStorage(() => localStorage),
             partialize: ({ seededAt, hosts, listings, fans, orders, reviews, saves, shares, hireRequests, payouts, settings, session }) => ({
                 seededAt,
