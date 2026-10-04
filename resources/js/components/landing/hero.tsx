@@ -153,7 +153,7 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
     }, [reduced]);
 
     return (
-        <section ref={section} data-tone="dark" data-curtain-close className={cn('relative isolate text-white', reduced ? 'bg-navy-950' : 'z-10 h-[280vh]')}>
+        <section ref={section} data-tone="dark" data-curtain-close className={cn('relative isolate text-white', reduced ? 'bg-navy-950' : 'z-10 h-[200vh]')}>
             <div className={cn('pointer-events-none top-0 h-[100dvh] min-h-[36rem] overflow-hidden', reduced ? 'relative' : 'sticky')}>
                 <div ref={stage} className="pointer-events-auto absolute inset-0 isolate flex flex-col bg-navy-950">
                     {/* Sauti za Busara in Stone Town, in its own colours, darkened only where the words sit. */}
@@ -166,10 +166,10 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                             fetchPriority="high"
                             className="size-full object-cover saturate-[1.1]"
                         />
-                        <div className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--b-950)_76%,transparent)_0%,color-mix(in_oklab,var(--b-950)_28%,transparent)_38%,color-mix(in_oklab,var(--b-950)_18%,transparent)_62%,color-mix(in_oklab,var(--b-950)_90%,transparent)_100%)]" />
+                        <div className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--b-950)_70%,transparent)_0%,color-mix(in_oklab,var(--b-950)_15%,transparent)_30%,color-mix(in_oklab,var(--b-950)_35%,transparent)_58%,color-mix(in_oklab,var(--b-950)_94%,transparent)_100%)]" />
                     </div>
                     {/* The name, huge, behind the microphone. */}
-                    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[58%] -z-10 -translate-y-1/2 overflow-hidden md:top-[56%]">
+                    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[38%] -z-10 -translate-y-1/2 overflow-hidden md:top-[40%]">
                         <div data-hero-track className="whitespace-nowrap">
                             <span data-hero-word className="block text-center font-display text-[25vw] leading-[0.8] tracking-[-0.06em] text-peri-300 md:text-[19vw]">
                                 timbuktu
@@ -181,19 +181,19 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                         <StageObject progress={progress} live={live} night reduced={reduced} />
                     </div>
 
-                    <Container className="relative flex flex-1 flex-col justify-between pt-20 pb-6 md:pt-28 md:pb-10">
-                        <div className="max-w-[30rem]">
-                            <h1 data-hero-rest className="font-display text-[clamp(2rem,4.2vw,3.6rem)] leading-[1.02]">
-                                <span className="sr-only">Timbuktu: </span>
-                                Tickets for events across Tanzania, booked online.
-                            </h1>
-                            <p data-hero-rest className="mt-4 max-w-[40ch] text-navy-100 md:text-lg">
-                                Concerts, match days, rooftop nights, tours and DJs to hire in Dar es Salaam, Arusha, Zanzibar and Dodoma. Pay with mobile money or a card, and your ticket comes to your phone.
-                            </p>
-                        </div>
-
-                        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-                            <div className="space-y-5">
+                    {/* The words sit below the name like a caption: what this is, what you can book, the next show. */}
+                    <Container className="relative flex flex-1 flex-col justify-end pt-20 pb-6 md:pb-10">
+                        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-10">
+                            <div className="max-w-3xl space-y-5">
+                                <div data-hero-rest className="space-y-3">
+                                    <h1 className="text-[clamp(1.6rem,2.5vw,2.3rem)] leading-[1.1] font-semibold tracking-[-0.02em]">
+                                        <span className="sr-only">Timbuktu: </span>
+                                        Tickets for events across Tanzania, booked online.
+                                    </h1>
+                                    <p className="max-w-[54ch] text-navy-100">
+                                        Concerts, match days, rooftop nights, tours and DJs to hire in Dar es Salaam, Arusha, Zanzibar and Dodoma. Pay with mobile money or a card, and your ticket comes to your phone.
+                                    </p>
+                                </div>
                                 <nav data-hero-rest aria-label="What you can book" className="hidden flex-wrap gap-2 sm:flex">
                                     {KINDS.map((k) => {
                                         const info = KIND_INFO[k];
@@ -219,7 +219,6 @@ export function Hero({ reduced, next }: { reduced: boolean; next?: Listing }) {
                                     </Button>
                                 </div>
                             </div>
-
                             {next?.event && (
                                 <Link data-hero-rest href={listingUrl(next)} className="group block w-full rounded-2xl md:w-80">
                                     <Card className="flex-row items-center gap-4 rounded-2xl bg-white p-3 pr-5 text-navy-900 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.5)] ring-0">

@@ -152,8 +152,8 @@ function Rig({ progress, night, reduced }: { progress: RefObject<number>; night:
 
         const scale = (wide ? 1 : Math.min(1, aspect * 1.4)) * (0.9 + 0.1 * s.intro) * (1 + 0.14 * upright);
         g.scale.setScalar(scale);
-        // On a phone the copy fills the top, so the microphone stands lower, over the name.
-        g.position.set(0, (wide ? 0.55 : -0.05) + Math.sin(t * 0.8) * 0.04 - (1 - s.intro) * 0.4 - 0.35 * upright, 0);
+        // The microphone stands over the name, which sits above the caption.
+        g.position.set(0, (wide ? 1.1 : 0.75) + Math.sin(t * 0.8) * 0.04 - (1 - s.intro) * 0.4 - 0.35 * upright, 0);
         // A full turn and a half over the hero, and the lean straightens out toward the visitor.
         g.rotation.set(0.12 + s.py * 0.12 + upright * 0.35, -0.6 + p * Math.PI * 1.5 + s.px * 0.25 + Math.sin(t * 0.3) * 0.05, -0.42 + upright * 0.42 + Math.sin(t * 0.5) * 0.02);
     });

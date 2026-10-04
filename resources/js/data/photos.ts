@@ -48,6 +48,7 @@ export const PHOTOS = {
     photographer: { src: 'photo-1754233597288-4fb399b854fb', alt: 'A photographer focused on his camera', credit: 'Andrew Itaga' },
     keyboard: { src: 'photo-1729014040403-d59c03974534', alt: 'A keyboard player on stage with a band', credit: 'Trésor Kande' },
     brassBand: { src: 'photo-1764933513906-c91791738271', alt: 'A brass band playing outdoors with a crowd watching', credit: 'Sitraka Mamy Tantely Andriamialijaona' },
+    emptyStage: { src: 'photo-1600779547877-be592ef5aad3', alt: 'Instruments and microphones on an empty stage under spotlights and haze', credit: 'Magnus Lunay' },
 } satisfies Record<string, Photo>;
 
 export type PhotoKey = keyof typeof PHOTOS;

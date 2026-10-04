@@ -10,7 +10,7 @@ const inOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 
 /** How much of the hero's pin goes to the microphone before the curtain starts to close. */
-export const CLOSE_FROM = 0.58;
+export const CLOSE_FROM = 0.35;
 
 /**
  * Satin in CSS, used until the shader has drawn its first frame and on devices without

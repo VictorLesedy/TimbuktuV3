@@ -2,7 +2,8 @@ import { Container } from '@/components/container';
 import { Mark } from '@/components/shell/wordmark';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DAY, pct, startOfDay, tsh } from '@/lib/format';
+import { PHOTOS } from '@/data/photos';
+import { DAY, pct, photoUrl, startOfDay, tsh } from '@/lib/format';
 import { useSignals } from '@/lib/signals';
 import { useHostData } from '@/lib/studio';
 import { cn } from '@/lib/utils';
@@ -15,6 +16,8 @@ import { canUseWebGL, SceneBoundary } from './hero';
 import { gsap } from './motion';
 
 const TicketStage = lazy(() => import('./ticket-scene'));
+// Photo: Magnus Lunay, Unsplash.
+const STAGE = PHOTOS.emptyStage;
 
 /** For entertainers: what the studio shows, from the signed-in host's real numbers, and what selling costs. */
 export function Entertainers({ settings }: { settings: Settings }) {
@@ -36,7 +39,20 @@ export function Entertainers({ settings }: { settings: Settings }) {
     const high = Math.max(...rates);
 
     return (
-        <section data-tone="dark" className="bg-navy-950 py-24 text-white md:py-32">
+        <section data-tone="dark" className="relative isolate overflow-hidden bg-navy-950 py-24 text-white md:py-32">
+            {/* An empty stage, lit and waiting for the show; darkest behind the words. */}
+            <div aria-hidden="true" className="absolute inset-0 -z-10">
+                <img
+                    src={photoUrl(STAGE.src, 1600)}
+                    srcSet={`${photoUrl(STAGE.src, 900)} 900w, ${photoUrl(STAGE.src, 1600)} 1600w, ${photoUrl(STAGE.src, 2400)} 2400w`}
+                    sizes="100vw"
+                    alt=""
+                    loading="lazy"
+                    className="size-full object-cover"
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(90deg,color-mix(in_oklab,var(--b-950)_92%,transparent)_0%,color-mix(in_oklab,var(--b-950)_70%,transparent)_45%,color-mix(in_oklab,var(--b-950)_35%,transparent)_100%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--b-950)_0%,transparent_22%,transparent_78%,var(--b-950)_100%)]" />
+            </div>
             <Container className="grid gap-14 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-20">
                 <div>
                     <h2 data-reveal-lines className="max-w-[13ch] font-display text-[clamp(2.4rem,4.6vw,4.25rem)] leading-[1]">
