@@ -28,14 +28,14 @@ const LINKS = [
     { href: '/studio', label: 'For entertainers', match: () => false },
 ];
 
-/** The same header as the home page, as a solid bar: the name, where to go, and the visitor's own corner. */
+/** The same header as the home page, a frosted bar: the name, where to go, and the visitor's own corner. */
 function FanHeader() {
     const { url } = usePage();
     const signedIn = useApp((s) => s.session.signedIn);
     const fan = useCurrentFan();
 
     return (
-        <header className="sticky top-0 z-40 border-b bg-background">
+        <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-lg">
             <Container className="flex h-16 items-center gap-2">
                 <Wordmark />
                 <nav aria-label="Main" className="ml-8 hidden items-center gap-1 text-sm font-medium md:flex">

@@ -842,6 +842,39 @@ export function buildListings(now: number): Listing[] {
             },
         },
     ];
+    // Sample lineups for the music events. Acts that are also on Timbuktu as hosts use those names.
+    const LINEUPS: Record<string, [name: string, role: string, time: string, photo: PhotoKey][]> = {
+        'l-sunset-sessions': [
+            ['Kilele House Band', 'Opening set', '18:30', 'bandOutdoor'],
+            ['Zawadi Mrisho', 'Headliner', '21:00', 'singerSmoke'],
+            ['DJ Kibo', 'Late DJ set', '23:00', 'djConsole'],
+        ],
+        'l-afrobeats-coco': [
+            ['DJ Malkia', 'Warm-up DJ set', '17:00', 'djWoman'],
+            ['Baraka Ngoma', 'Support', '19:30', 'guitar'],
+            ['Amani Fresh', 'Headliner', '21:30', 'performerPointing'],
+        ],
+        'l-bahari-fest': [
+            ['Shangwe Brass Band', 'Opening', '17:00', 'brassBand'],
+            ['Taarab ya Pwani', 'Taarab', '18:30', 'keyboard'],
+            ['Mawimbi Band', 'Dansi', '20:00', 'bandOutdoor'],
+            ['Nyota Saida', 'Headliner', '22:00', 'singerSmoke'],
+        ],
+        'l-jazz-lawn': [
+            ['Juma Sax', 'Solo saxophone', '15:00', 'sax'],
+            ['Arusha Jazz Trio', 'Support', '16:30', 'keyboard'],
+            ['Neema and the Keys', 'Headliner', '17:45', 'guitar'],
+        ],
+        'l-ngoma': [
+            ['Bustani Drummers', 'Ngoma', '16:00', 'drummer'],
+            ['Dodoma Youth Dancers', 'Dance', '17:00', 'ngoma'],
+            ['Wagogo Ensemble', 'Headliner', '18:30', 'dance'],
+        ],
+    };
+    for (const l of listings) {
+        const acts = LINEUPS[l.id];
+        if (l.event && acts) l.event.lineup = acts.map(([name, role, time, photo]) => ({ name, role, time, photo: PHOTOS[photo] }));
+    }
     // An end time on the clock can land before the start (a night that runs past midnight), so move it to the next day.
     for (const l of listings) {
         if (!l.event) continue;

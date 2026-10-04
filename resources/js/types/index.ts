@@ -46,11 +46,23 @@ export interface VenueOption {
     perDay: number;
 }
 
+/** One act on a music event's bill, in running order. */
+export interface Act {
+    name: string;
+    /** Headliner, Support, DJ set and the like. */
+    role: string;
+    /** Set time, hh:mm. */
+    time: string;
+    photo: Photo;
+}
+
 export interface EventDetails {
     startsAt: string;
     endsAt: string;
     place: string;
     tiers: Tier[];
+    /** Music events only. */
+    lineup?: Act[];
 }
 
 export interface VenueDetails {

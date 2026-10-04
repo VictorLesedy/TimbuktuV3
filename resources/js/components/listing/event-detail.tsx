@@ -9,8 +9,8 @@ import { listingUrl } from '@/lib/kinds';
 import { ended } from '@/lib/showcase';
 import type { Signals } from '@/lib/signals';
 import { cn } from '@/lib/utils';
-import type { Host, Listing, Review } from '@/types';
-import { ArrowRightIcon, ArrowsPointingOutIcon, CalendarDaysIcon, ClockIcon, MapPinIcon, TicketIcon } from '@heroicons/react/24/outline';
+import type { Act, Host, Listing, Review } from '@/types';
+import { ArrowRightIcon, ArrowsPointingOutIcon, CalendarDaysIcon, ClockIcon, MapPinIcon, SignalIcon, TicketIcon } from '@heroicons/react/24/outline';
 import { CheckBadgeIcon as VerifiedIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
@@ -107,6 +107,76 @@ function PhotoCarousel({ listing }: { listing: Listing }) {
     );
 }
 
+/** Who plays, in running order, with the set times. The headliner is marked. */
+function Lineup({ acts }: { acts: Act[] }) {
+    return (
+        <section className="space-y-4">
+            <h2 className="text-xl font-semibold">Lineup</h2>
+            <ol className="grid gap-3 sm:grid-cols-2">
+                {acts.map((a) => {
+                    const headliner = a.role === 'Headliner';
+                    return (
+                        <li key={a.name}>
+                            <Card className="flex-row items-center gap-4 px-(--card-spacing) [--card-spacing:--spacing(2)]">
+                                <Photo photo={a.photo} width={200} ratio={1} className="size-20 shrink-0 rounded-[0.625rem]" sizes="80px" />
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-sm text-muted-foreground tabular">{a.time}</p>
+                                    <p className="truncate font-semibold">{a.name}</p>
+                                    {!headliner && <p className="text-sm text-muted-foreground">{a.role}</p>}
+                                </div>
+                                {headliner && <Badge className="mr-2">Headliner</Badge>}
+                            </Card>
+                        </li>
+                    );
+                })}
+            </ol>
+        </section>
+    );
+}
+
+/**
+ * Time to doors, ticking each second, above the tickets. Once it has started it says so and
+ * when it ends; afterwards it is gone (the tickets card says the event has ended).
+ */
+function Countdown({ startsAt, endsAt }: { startsAt: string; endsAt: string }) {
+    const [now, setNow] = useState(() => Date.now());
+    useEffect(() => {
+        const id = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(id);
+    }, []);
+    const start = new Date(startsAt).getTime();
+    if (now >= new Date(endsAt).getTime()) return null;
+    if (now >= start) {
+        return (
+            <p className="flex items-center gap-2 rounded-lg bg-secondary px-3 py-2.5 text-sm font-medium">
+                <SignalIcon className="size-5 text-green-600" aria-hidden="true" />
+                On now · ends at {formatTime(endsAt)}
+            </p>
+        );
+    }
+    const total = Math.floor((start - now) / 1000);
+    const parts: [number, string][] = [
+        [Math.floor(total / 86400), 'days'],
+        [Math.floor((total % 86400) / 3600), 'hours'],
+        [Math.floor((total % 3600) / 60), 'min'],
+        [total % 60, 'sec'],
+    ];
+    return (
+        // Read out once a minute, not every second.
+        <div role="timer" aria-label={`Starts in ${parts[0]![0]} days, ${parts[1]![0]} hours and ${parts[2]![0]} minutes`}>
+            <p className="text-sm text-muted-foreground">Starts in</p>
+            <div className="mt-2 grid grid-cols-4 gap-2" aria-hidden="true">
+                {parts.map(([value, label]) => (
+                    <div key={label} className="rounded-lg bg-secondary py-2 text-center">
+                        <span className="block font-display text-2xl leading-none tabular">{String(value).padStart(2, '0')}</span>
+                        <span className="text-xs text-muted-foreground">{label}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 /** A row of event posters under a heading, or nothing when there are none. */
 function EventRow({ title, events }: { title: string; events: Listing[] }) {
     if (!events.length) return null;
@@ -193,7 +263,14 @@ export function EventDetail({
                 <aside className="lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start" aria-label="Tickets">
                     <Card className="gap-4 px-(--card-spacing) [--card-spacing:--spacing(6)]">
                         <h2 className="text-lg font-semibold">{over ? 'Tickets' : 'Buy tickets'}</h2>
-                        {over ? <Ended listing={listing} next={related.upcoming.find((l) => l.hostId === listing.hostId)} /> : <BookingBox listing={listing} signals={signals} />}
+                        {over ? (
+                            <Ended listing={listing} next={related.upcoming.find((l) => l.hostId === listing.hostId)} />
+                        ) : (
+                            <>
+                                <Countdown startsAt={ev.startsAt} endsAt={ev.endsAt} />
+                                <BookingBox listing={listing} signals={signals} />
+                            </>
+                        )}
                     </Card>
                 </aside>
 
@@ -203,6 +280,7 @@ export function EventDetail({
                         <p className="text-lg">{listing.summary}</p>
                         <p className="max-w-prose text-muted-foreground">{listing.description}</p>
                     </section>
+                    {ev.lineup && ev.lineup.length > 0 && <Lineup acts={ev.lineup} />}
                     <Card className="flex-row items-start gap-4 px-(--card-spacing) [--card-spacing:--spacing(5)]">
                         <Avatar className="size-12">
                             <AvatarFallback className="bg-secondary font-semibold">{initials(host.name)}</AvatarFallback>
