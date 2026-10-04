@@ -107,24 +107,31 @@ function PhotoCarousel({ listing }: { listing: Listing }) {
     );
 }
 
-/** Who plays, in running order, with the set times. The headliner is marked. */
+/**
+ * Who plays, in running order: a tall photo of each act with the set time, name and role
+ * set in white over a blur that rises from the bottom edge. The headliner is marked.
+ */
 function Lineup({ acts }: { acts: Act[] }) {
     return (
         <section className="space-y-4">
             <h2 className="text-xl font-semibold">Lineup</h2>
-            <ol className="grid gap-3 sm:grid-cols-2">
+            <ol className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {acts.map((a) => {
                     const headliner = a.role === 'Headliner';
                     return (
                         <li key={a.name}>
-                            <Card className="flex-row items-center gap-4 px-(--card-spacing) [--card-spacing:--spacing(2)]">
-                                <Photo photo={a.photo} width={200} ratio={1} className="size-20 shrink-0 rounded-[0.625rem]" sizes="80px" />
-                                <div className="min-w-0 flex-1">
-                                    <p className="text-sm text-muted-foreground tabular">{a.time}</p>
-                                    <p className="truncate font-semibold">{a.name}</p>
-                                    {!headliner && <p className="text-sm text-muted-foreground">{a.role}</p>}
+                            <Card className="relative gap-0 overflow-hidden rounded-2xl py-0 ring-0">
+                                <Photo photo={a.photo} width={480} ratio={3 / 4} sizes="(min-width: 640px) 16rem, 50vw" />
+                                {/* The blur is strongest at the bottom and fades out up the photo. */}
+                                <div
+                                    aria-hidden="true"
+                                    className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(0deg,rgb(0_0_0/0.65),transparent)] backdrop-blur-md [mask-image:linear-gradient(0deg,black_40%,transparent)]"
+                                />
+                                <div className="absolute inset-x-0 bottom-0 space-y-1 p-4 text-white">
+                                    <p className="text-sm text-white/80 tabular">{a.time}</p>
+                                    <p className="text-lg leading-tight font-semibold">{a.name}</p>
+                                    {headliner ? <Badge className="bg-peri-300 text-on-peri">Headliner</Badge> : <p className="text-sm text-white/80">{a.role}</p>}
                                 </div>
-                                {headliner && <Badge className="mr-2">Headliner</Badge>}
                             </Card>
                         </li>
                     );
