@@ -169,7 +169,7 @@ export function Finale({ reduced }: { reduced: boolean }) {
 
     return (
         <section ref={section} data-tone="dark" className="relative isolate overflow-hidden bg-navy-950 text-white">
-            <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_70%_50%,var(--b-700)_0%,transparent_70%)]">
+            <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_70%_50%,color-mix(in_oklab,var(--a-400)_24%,var(--b-950))_0%,transparent_70%)]">
                 {near && webgl && (
                     <SceneBoundary onFail={() => setWebgl(false)}>
                         <Suspense fallback={null}>

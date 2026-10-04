@@ -81,7 +81,7 @@
     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Palettes. Each is a dark-to-light ramp of one hue, plus one accent that is never beige, cream or brass. */
+/* Two palettes, Ember (the default) and Navy: a dark-to-light ramp of one hue, plus one accent. */
 :root,
 [data-palette='ember'] {
     --b-950: #0a0a0a; --b-900: #141414; --b-800: #1f1f1f; --b-700: #2b2b2b; --b-600: #3d3d3d; --b-400: #8a8a8a; --b-200: #d4d4d4; --b-100: #ebebeb; --b-50: #f6f6f6;
@@ -89,34 +89,12 @@
     /* Text on an accent fill: dark for bright accents, white for deep ones. */
     --a-ink: #0a0a0a;
 }
-[data-palette='red'] {
-    --b-950: #0a0606; --b-900: #150b0c; --b-800: #201113; --b-700: #2d181b; --b-600: #402326; --b-400: #8f7477; --b-200: #dccacc; --b-100: #efe4e5; --b-50: #f8f2f3;
-    --a-100: #f6dcdf; --a-200: #e3a3aa; --a-300: #9b111e; --a-400: #7f0d18;
-    --a-ink: #ffffff;
-}
 [data-palette='navy'] {
     --b-950: #070f26; --b-900: #0d1c42; --b-800: #16295c; --b-700: #22397a; --b-600: #2f4a96; --b-400: #5c77bd; --b-200: #b9c6e6; --b-100: #dde4f3; --b-50: #eef2fa;
     --a-100: #e3e9fb; --a-200: #c9d4f6; --a-300: #a9bcf5; --a-400: #8aa2ee;
 }
-[data-palette='cobalt'] {
-    --b-950: #050b3b; --b-900: #1230c9; --b-800: #1a3ce0; --b-700: #2f53ec; --b-600: #4d6cf2; --b-400: #8ea2f7; --b-200: #c9d2fb; --b-100: #e1e6fd; --b-50: #f0f3ff;
-    --a-100: #fff7cc; --a-200: #ffef99; --a-300: #ffe14d; --a-400: #ffd60a;
-}
-[data-palette='forest'] {
-    --b-950: #04140e; --b-900: #0b3324; --b-800: #114631; --b-700: #185a3f; --b-600: #217150; --b-400: #4f9e7b; --b-200: #b4dcc8; --b-100: #d9eee3; --b-50: #edf7f1;
-    --a-100: #f3fbd6; --a-200: #e6f6a8; --a-300: #d3ee6b; --a-400: #bde23a;
-}
-[data-palette='pink'] {
-    --b-950: #0a0a0f; --b-900: #16161f; --b-800: #23232f; --b-700: #33334a; --b-600: #4a4a66; --b-400: #8b8ba3; --b-200: #cfcfdc; --b-100: #e7e7ee; --b-50: #f4f4f7;
-    --a-100: #ffe0ee; --a-200: #ffb8d6; --a-300: #ff7ab3; --a-400: #ff3d8f;
-}
-[data-palette='bahari'] {
-    --b-950: #021a26; --b-900: #00384f; --b-800: #004d6b; --b-700: #006a91; --b-600: #0088b8; --b-400: #4cc0e6; --b-200: #b3e6f6; --b-100: #d9f2fa; --b-50: #eef9fd;
-    --a-100: #fff6cc; --a-200: #ffec99; --a-300: #fde14f; --a-400: #fcd116;
-}
 
-/* Shape rule: buttons and chips are pills, cards 16px, inputs 10px.
-   Light-toned landing sections keep the light tokens even when the app is dark. */
+/* Light-toned landing sections keep the light tokens even when the app is dark. */
 :root,
 [data-mode='light'],
 [data-tone='light'] {

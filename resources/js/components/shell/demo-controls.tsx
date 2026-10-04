@@ -101,7 +101,7 @@ export function DemoControls() {
                 </div>
                 <div className="space-y-2">
                     <Label>Colours</Label>
-                    <div role="radiogroup" aria-label="Colour palette" className="grid grid-cols-7 gap-2">
+                    <div role="radiogroup" aria-label="Colour palette" className="grid grid-cols-2 gap-2">
                         {PALETTES.map((p) => (
                             <button
                                 key={p.id}

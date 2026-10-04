@@ -20,7 +20,7 @@
                 document.documentElement.dataset.mode = mode;
                 try {
                     var palette = localStorage.getItem('timbuktu-palette');
-                    if (['ember', 'red', 'navy', 'cobalt', 'forest', 'pink', 'bahari'].indexOf(palette) >= 0) document.documentElement.dataset.palette = palette;
+                    if (['ember', 'navy'].indexOf(palette) >= 0) document.documentElement.dataset.palette = palette;
                 } catch (e) {}
                 document.querySelector('meta[name="theme-color"]').setAttribute('content', mode === 'dark' ? '#0a0a0a' : '#f4f5f7');
             })();
