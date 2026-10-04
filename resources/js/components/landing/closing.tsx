@@ -147,16 +147,35 @@ export function Finale({ reduced }: { reduced: boolean }) {
     const section = useRef<HTMLElement>(null);
     const progress = useRef(0);
     const [near, setNear] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const [webgl, setWebgl] = useState<boolean | null>(null);
     const [ready, setReady] = useState(false);
-    useEffect(() => setWebgl(canUseWebGL()), []);
-    // The canvas mounts as the close approaches and only runs while it is on screen.
+    // Fetch the ticket's code once the page is idle, so it is in hand long before the close.
+    useEffect(() => {
+        const gl = canUseWebGL();
+        setWebgl(gl);
+        if (!gl) return;
+        const load = () => void import('./ticket-scene');
+        if ('requestIdleCallback' in window) {
+            const id = window.requestIdleCallback(load, { timeout: 3000 });
+            return () => window.cancelIdleCallback(id);
+        }
+        const id = setTimeout(load, 2000);
+        return () => clearTimeout(id);
+    }, []);
+    // The canvas mounts and draws its first frame (textures, shaders) a few screens early,
+    // then only runs while the close is on screen.
     useEffect(() => {
         const el = section.current;
         if (!el) return;
+        const early = new IntersectionObserver(([e]) => e?.isIntersecting && setMounted(true), { rootMargin: '250% 0px' });
         const io = new IntersectionObserver(([e]) => setNear(Boolean(e?.isIntersecting)), { rootMargin: '300px 0px' });
+        early.observe(el);
         io.observe(el);
-        return () => io.disconnect();
+        return () => {
+            early.disconnect();
+            io.disconnect();
+        };
     }, []);
     useLayoutEffect(() => {
         const el = section.current;
@@ -169,12 +188,12 @@ export function Finale({ reduced }: { reduced: boolean }) {
 
     return (
         <section ref={section} data-tone="dark" className="relative isolate overflow-hidden bg-navy-950 text-white">
-            <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_70%_50%,color-mix(in_oklab,var(--a-400)_24%,var(--b-950))_0%,transparent_70%)]">
-                {near && webgl && (
+            <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(70%_85%_at_68%_50%,color-mix(in_oklab,var(--a-400)_34%,var(--b-950))_0%,color-mix(in_oklab,var(--a-400)_14%,var(--b-950))_45%,transparent_80%)]">
+                {mounted && webgl && (
                     <SceneBoundary onFail={() => setWebgl(false)}>
                         <Suspense fallback={null}>
                             <div className={cn('absolute inset-0 transition-opacity duration-700', ready ? 'opacity-100' : 'opacity-0')}>
-                                <TicketStage progress={progress} live={near} reduced={reduced} onReady={() => setReady(true)} />
+                                <TicketStage progress={progress} live={near || !ready} reduced={reduced} onReady={() => setReady(true)} />
                             </div>
                         </Suspense>
                     </SceneBoundary>
